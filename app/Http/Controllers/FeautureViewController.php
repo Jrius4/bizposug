@@ -13,10 +13,10 @@ class FeautureViewController extends Controller
         return view('feautures.products');
     }
 
-    public function cashUpView(Request $request)
+    public function cashOutView(Request $request)
     {
-        $cashupID = $request->query('cashupID');
-        return view('feautures.cashup');
+        $cashoutID = $request->query('cashoutID');
+        return view('feautures.cashout');
     }
 
     public function historyView(Request $request)

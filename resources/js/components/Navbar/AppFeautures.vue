@@ -35,7 +35,7 @@ export default {
     return {
       items: [
         { name: "Products", image: "inventory.png" },
-        { name: "Cashup", image: "money.png" },
+        { name: "Cashout", image: "money.png" },
         { name: "History", image: "business-report.png" },
         { name: "Sales", image: "budget.png" },
         { name: "Suppliers", image: "supplier.png" },

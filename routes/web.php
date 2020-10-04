@@ -22,7 +22,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'feautures'], function () {
     Route::get('/products', 'FeautureViewController@productsView');
-    Route::get('/cashup', 'FeautureViewController@cashUpView');
+    Route::get('/cashout', 'FeautureViewController@cashOutView');
     Route::get('/history', 'FeautureViewController@historyView');
     Route::get('/sales', 'FeautureViewController@salesView');
     Route::get('/suppliers', 'FeautureViewController@suppliersView');

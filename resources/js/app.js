@@ -26,7 +26,6 @@ if (token !== null) {
         .catch(err => {
             console.log({ err });
         });
-    console.log("no token", { token });
 }
 
 /**
@@ -45,8 +44,23 @@ Vue.component(
     require("./components/dashboard/Dashboard.vue").default
 );
 Vue.component(
+    "auto-logout",
+    require("./components/Auth/AutoLogout.vue").default
+);
+Vue.component(
     "app-feautures",
     require("./components/Navbar/AppFeautures.vue").default
+);
+
+//products
+Vue.component(
+    "view-products",
+    require("./components/modules/products/ViewProducts.vue").default
+);
+//cashout
+Vue.component(
+    "cash-out",
+    require("./components/modules/cashout/CashOut.vue").default
 );
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -54,7 +68,11 @@ Vue.component(
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+import "./plugins/base";
+
 import vuetify from "./plugins/vuetify";
+import "./plugins/chartist";
+import "./plugins/CxltToastr";
 
 const app = new Vue({
     store,

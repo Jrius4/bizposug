@@ -17,4 +17,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth:api']], function () {
     Route::get('user', 'API\UserController@loggedInUser');
+    Route::get('products', 'API\ProductsController@fetchProducts');
+    Route::get('brands', 'API\ProductsController@fetchBrands');
+    Route::get('sizes', 'API\ProductsController@fetchSizes');
+    Route::get('groups', 'API\ProductsController@fetchProdgroups');
 });

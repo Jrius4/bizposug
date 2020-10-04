@@ -3,12 +3,20 @@ import Vue from "vue";
 import Vuex from "vuex";
 
 import usersModule from "./users";
+import productsModule from "./products";
+import brandsModule from "./brands";
+import sizesModule from "./sizes";
+import groupsModule from "./groups";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     modules: {
-        usersModule
+        usersModule,
+        productsModule,
+        brandsModule,
+        groupsModule,
+        sizesModule
     },
     state: {
         user: null,

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSuppliesTable extends Migration
+class CreateSuppgroupsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateSuppliesTable extends Migration
      */
     public function up()
     {
-        Schema::create('supplies', function (Blueprint $table) {
+        Schema::create('suppgroups', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('slug');
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ class CreateSuppliesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('supplies');
+        Schema::dropIfExists('suppgroups');
     }
 }
