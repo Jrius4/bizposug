@@ -9,7 +9,7 @@ class Product extends Model
     protected $fillable = [
 
         'name', 'barcode', 'category', 'company_name', 'cost_price', 'supplier_id',
-        'wholesale_price', 'retailsale_price', 'quantity', 'tax_percentage', 'avatar', 'prodgroup_id'
+        'wholesale_price', 'retailsale_price', 'quantity', 'tax_percentage', 'avatar', 'prodgroup_id', 'description'
     ];
 
     public function prodgroup()
@@ -30,5 +30,9 @@ class Product extends Model
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);
+    }
+    public function sizeprices()
+    {
+        return $this->hasMany(Sizeprice::class);
     }
 }

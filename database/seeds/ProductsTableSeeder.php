@@ -4,6 +4,7 @@ use App\Brand;
 use App\Prodgroup;
 use App\Product;
 use App\Size;
+use App\Sizeprice;
 use App\Suppgroup;
 use App\Supplier;
 use Illuminate\Database\Seeder;
@@ -25,6 +26,7 @@ class ProductsTableSeeder extends Seeder
         $size = new Size();
         $suppcat = new Suppgroup();
         $supplier = new Supplier();
+        $szpr = new Sizeprice();
         $str = new Str();
         $faker = Faker::create();
 
@@ -85,7 +87,7 @@ class ProductsTableSeeder extends Seeder
 
         for ($i = 0; $i < 250; $i++) {
             $cost = rand(1, 400) . '000';
-            $product =  $products->with('brands', 'sizes')->create([
+            $product =  $products->with('brands', 'sizes', 'sizeprices')->create([
                 'name' => $faker->word(),
                 'barcode' => rand(11111111111111, 999999999999),
                 'category' => $faker->word(),
@@ -97,11 +99,22 @@ class ProductsTableSeeder extends Seeder
                 'quantity' => 15 * $i,
                 'tax_percentage' => ($i + 3) % 5,
                 'avatar' => '/products/product_avatar_' . ($i % 3) . '.jpg',
-                'prodgroup_id' => rand(1, 50)
+                'prodgroup_id' => rand(1, 50),
+                'description' => $faker->paragraph(rand(1, 2))
             ]);
 
             $product->brands()->attach($brand->find([rand(1, 10), rand(11, 18), rand(19, 35)]));
             $product->sizes()->attach($size->find([rand(1, 10), rand(11, 18), rand(19, 25)]));
+            $sizes = $product->sizes()->get();
+
+            foreach ($sizes as $size) {
+                $product->sizeprices()->create([
+                    'name' => $size->name,
+                    'cost' => $cost + (7500 * rand(20, 75)),
+                    'whole_sale' => $cost + (7500 * rand(80, 100)),
+                    'retail_sale' => $cost + (7500 * rand(150, 220))
+                ]);
+            }
         }
     }
 }

@@ -14,7 +14,13 @@ class CreateTransactionsTable extends Migration
     public function up()
     {
         Schema::create('transactions', function (Blueprint $table) {
+            $table->string('code');
             $table->bigIncrements('id');
+            $table->json('products')->nullable();
+            $table->string('discount')->default('0');
+            $table->string('total')->default('0');
+            $table->string('subtotal')->default('0');
+            $table->string('type_of_transaction')->nullable();
             $table->timestamps();
         });
     }

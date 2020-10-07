@@ -29,3 +29,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'feautures'], function () {
     Route::get('/customers', 'FeautureViewController@customersView');
     Route::get('/settings', 'FeautureViewController@settingsView');
 });
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/print/reciept', 'PDFController@printReceipt');
+});

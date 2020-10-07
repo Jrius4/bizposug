@@ -50,6 +50,21 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($this->isHttpException($exception)) {
+            $code = $exception->getStatusCode();
+            dump($code);
+            if ($code ==  '404') {
+                return response()->view('error-pages.404');
+            }
+        }
+
+        if ($exception instanceof \Illuminate\Session\TokenMismatchException) {
+            $error = 'The session has expired due to inactivity. Please try again';
+            return response()
+                ->view('error-pages.419', compact('error'));
+            // ->withInput($request->except(['password', 'password_confirmation']))
+            // ->with();
+        }
         return parent::render($request, $exception);
     }
 }

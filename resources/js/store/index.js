@@ -7,6 +7,7 @@ import productsModule from "./products";
 import brandsModule from "./brands";
 import sizesModule from "./sizes";
 import groupsModule from "./groups";
+import cartModule from "./cart";
 
 Vue.use(Vuex);
 
@@ -16,7 +17,8 @@ export default new Vuex.Store({
         productsModule,
         brandsModule,
         groupsModule,
-        sizesModule
+        sizesModule,
+        cartModule
     },
     state: {
         user: null,

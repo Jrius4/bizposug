@@ -1,0 +1,30 @@
+@media screen {
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.6rem;
+    }
+
+    td,
+    th {
+        border: 0.3px solid #999;
+        padding: 0.1rem;
+        text-align: left;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-around;
+    }
+    .header img {
+        width: 1cm;
+        align-self: baseline;
+    }
+    .header p {
+        margin-top: 20pt;
+        font-size: 0.8rem;
+    }
+    p small {
+        font-size: 0.6rem;
+    }
+}

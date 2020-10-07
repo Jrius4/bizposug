@@ -26,6 +26,7 @@ class CreateProductsTable extends Migration
             $table->string('retailsale_price');
             $table->string('quantity');
             $table->string('tax_percentage');
+            $table->mediumText('description')->nullable();
             $table->string('avatar');
             $table->timestamps();
 

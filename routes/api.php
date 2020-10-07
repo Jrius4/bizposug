@@ -21,4 +21,5 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('brands', 'API\ProductsController@fetchBrands');
     Route::get('sizes', 'API\ProductsController@fetchSizes');
     Route::get('groups', 'API\ProductsController@fetchProdgroups');
+    Route::post('save-payment', 'API\ProductsController@savePayment');
 });
