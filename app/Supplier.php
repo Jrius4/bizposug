@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Supplier extends Model
 {
-    public $fillable = ['name', 'slug', 'suppgroup_id', 'company', 'address', 'contact'];
+    public $fillable = ['name', 'slug', 'suppgroup_id', 'company', 'address', 'balance', 'contact'];
     public function Suppgroup()
     {
         return $this->belongsTo(Suppgroup::class);
@@ -15,5 +15,10 @@ class Supplier extends Model
     public function products()
     {
         return $this->hasMany(Suppgroup::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
     }
 }

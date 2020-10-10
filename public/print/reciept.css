@@ -16,16 +16,11 @@
         font-size: xx-small;
     }
 
-    /* @page {
-        margin: 20px;
-        size: 8cm 16cm portrait;
-    }
-
     @page :left {
-        margin-right: 200pt;
+        margin-right: 0;
     }
 
     @page :right {
-        margin-left: 200pt;
-    } */
+        margin-left: 0;
+    }
 }

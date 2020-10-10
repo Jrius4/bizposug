@@ -16,7 +16,7 @@ class PDFController extends Controller
 
         // $data = 'data';
         $pdf = \PDF::loadView('pdf.reciept', compact('trans'));
-        $customPaper = array(0, 0, 226.40, 509.40);
+        $customPaper = array(0, 0, 200, 509);
 
         return $pdf->setPaper($customPaper, 'portrait')->stream('nsma.pdf');
         // return view('pdf.reciept', compact('trans'));

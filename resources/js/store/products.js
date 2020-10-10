@@ -31,7 +31,7 @@ export default {
     },
     actions: {
         async GET_PRODUCTS_ACTION(context, payload) {
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 if (context.rootGetters.loggedIn) {
                     const keywords = payload.val || "";
                     const page = payload.page || "";

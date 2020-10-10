@@ -22,4 +22,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('sizes', 'API\ProductsController@fetchSizes');
     Route::get('groups', 'API\ProductsController@fetchProdgroups');
     Route::post('save-payment', 'API\ProductsController@savePayment');
+    Route::get('payments', 'PaymentController@fetchPayments');
+    Route::get('workers', 'WorkerController@fetchWorkers');
+    Route::get('suppliers', 'SupplierController@fetchSuppliers');
 });

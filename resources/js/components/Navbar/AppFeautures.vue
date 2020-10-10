@@ -40,6 +40,7 @@ export default {
         { name: "Sales", image: "budget.png" },
         { name: "Suppliers", image: "supplier.png" },
         { name: "Customers", image: "teamwork.png" },
+        { name: "Payments", image: "payments.png" },
         { name: "Settings", image: "settings.png" },
       ],
     };

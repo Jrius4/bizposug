@@ -20,6 +20,7 @@ class CreateSuppliersTable extends Migration
             $table->unsignedBigInteger('suppgroup_id')->nullable();
             $table->string('company')->nullable();
             $table->string('address')->nullable();
+            $table->string('balance')->nullable();
             $table->string('contact');
             $table->timestamps();
 

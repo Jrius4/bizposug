@@ -8,6 +8,9 @@ import brandsModule from "./brands";
 import sizesModule from "./sizes";
 import groupsModule from "./groups";
 import cartModule from "./cart";
+import paymentsModule from "./payments";
+import workersModule from "./workers";
+import suppliersModule from "./suppliers";
 
 Vue.use(Vuex);
 
@@ -18,7 +21,10 @@ export default new Vuex.Store({
         brandsModule,
         groupsModule,
         sizesModule,
-        cartModule
+        cartModule,
+        paymentsModule,
+        workersModule,
+        suppliersModule
     },
     state: {
         user: null,

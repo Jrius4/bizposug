@@ -48,4 +48,9 @@ class FeautureViewController extends Controller
         $settingID = $request->query('settingID');
         return view('feautures.settings');
     }
+    public function paymentsView(Request $request)
+    {
+        $paymentsID = $request->query('paymentsID');
+        return view('feautures.payments');
+    }
 }

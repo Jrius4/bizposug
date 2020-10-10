@@ -46,7 +46,8 @@ class ProductsTableSeeder extends Seeder
                 'suppgroup_id' => rand(1, 5),
                 'company' => $faker->company,
                 'address' => $faker->address,
-                'contact' => $faker->phoneNumber
+                'contact' => $faker->phoneNumber,
+                'balance' => 500 * rand(15, 20),
             ]);
         }
 

@@ -9,12 +9,46 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <link rel="stylesheet" media="screen"  href="{{asset('/print/main.css')}}">
-        <link rel="stylesheet"  media="print" href="{{asset('/print/reciept.css')}}">
+        {{-- <link rel="stylesheet"  media="print" href="{{asset('/print/reciept.css')}}"> --}}
 
 <style>
+    .barcode{
+        display: block;
+        justify-items: center;
+
+    }
+    .barcode .bars{
+        margin: auto;
+        width: 4cm
+    }
 .page-break {
     page-break-after: always;
 }
+table {
+        border-collapse: collapse;
+        width: 80%;
+        font-size: 1pt;
+        margin: auto
+    }
+    td,
+    th {
+        border: 0.2px solid transparent;
+        padding: 1pt;
+        text-align: left;
+        font-size: xx-small;
+    }
+    .header{
+        margin-right: 8pt;
+    }
+
+
+    @page :left {
+        margin-right: 8pt;
+    }
+
+    @page :right {
+        margin-left: 8pt;
+    }
 </style>
     </head>
     <body>
@@ -25,7 +59,7 @@
 
                     <p>
                          {{ config('app.name', 'Laravel') }}<br/>
-                    <small>phone number <br> email <br> address <br>{{$trans->created_at->format('D, d/M/Y H:i:s')}}</small>
+                    <small>No.+256 779 571619 <br> Email. kazibwejuliusjunior@gmail.com <br> Address. Muyenga A <br>Date.{{$trans->created_at->format('D, d/M/Y H:i:s')}}</small>
                     </p>
                 </div>
 
@@ -33,12 +67,12 @@
                     <table>
                         <thead>
                             <tr>
-                            <th>Name</th>
-                            <th>Brand</th>
-                            <th>Size</th>
-                            <th>QTY</th>
-                            <th>Rate <sup>UGX</sup></th>
-                            <th>Amount <sup>UGX</sup></th>
+                            <td>Name</td>
+                            <td>Brand</td>
+                            <td>Size</td>
+                            <td>QTY</td>
+                            <td>Rate <sup>UGX</sup></td>
+                            <td>Amount <sup>UGX</sup></td>
                             </tr>
                         </thead>
 
@@ -62,26 +96,22 @@
                             @endforeach
                         </tbody>
                         @endif
-
-                    </table>
-                    <div class="my-2"></div>
-                    <table>
                         <tbody>
                             <tr>
-                                <th>Type of Order</th>
-                                <td>{{$trans->type_of_transaction}}</td>
+                                <td>Type of Order</td>
+                                <td colspan="5">{{$trans->type_of_transaction}}</td>
                             </tr>
                             <tr>
-                                <th>Subtotal <sub>UGX</sub></th>
-                                <td>{{number_format($trans->subtotal)}}</td>
+                                <td>Subtotal <sub>UGX</sub></td>
+                                <td colspan="5">{{number_format($trans->subtotal)}}</td>
                             </tr>
                             <tr>
-                                <th>Discount <sub>UGX</sub></th>
-                                <td>{{number_format($trans->discount)}}</td>
+                                <td>Discount <sub>UGX</sub></td>
+                                <td colspan="5">{{number_format($trans->discount)}}</td>
                             </tr>
                             <tr>
-                                <th>Total Amount <sub>UGX</sub></th>
-                                <td>{{number_format($trans->total)}}</td>
+                                <td>Total Amount <sub>UGX</sub></td>
+                                <td colspan="5">{{number_format($trans->total)}}</td>
                             </tr>
 
                         </tbody>
@@ -89,10 +119,13 @@
                     </table>
                 </section>
                 <div class="clearfix"></div>
-                <section>
-                    <?php
-                    echo DNS1D::getBarcodeHTML('4445645656', 'CODE11');
-                    ?>
+                <section class="barcode">
+                    <div class="bars">
+                         {!! DNS1D::getBarcodeHTML($trans->code, 'UPCA')!!}
+
+                         <span>{{"0".strval($trans->code)."1"}}</span>
+                    </div>
+
                 </section>
 
 

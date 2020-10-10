@@ -62,6 +62,11 @@ Vue.component(
     "cash-out",
     require("./components/modules/cashout/CashOut.vue").default
 );
+//payments
+Vue.component(
+    "payment-index",
+    require("./components/modules/payments/PaymentIndex.vue").default
+);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

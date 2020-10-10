@@ -140,7 +140,7 @@ class ProductsController extends Controller
 
         $tran = new Transaction();
         $trans = $tran->create([
-            'code' => rand(11111111111111, 999999999999),
+            'code' =>  '4' . strval(rand(11111111, 99999999)) . "5",
             'products' => $items,
             'subtotal' => $subtotal,
             'discount' => $discount,
@@ -151,7 +151,6 @@ class ProductsController extends Controller
 
         $transID = $trans->id;
 
-
-        return response()->json(compact('transID'));$
+        return response()->json(compact('transID'));
     }
 }

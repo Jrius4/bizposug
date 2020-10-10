@@ -28,6 +28,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'feautures'], function () {
     Route::get('/suppliers', 'FeautureViewController@suppliersView');
     Route::get('/customers', 'FeautureViewController@customersView');
     Route::get('/settings', 'FeautureViewController@settingsView');
+    Route::get('/payments', 'FeautureViewController@paymentsView');
 });
 
 Route::group(['middleware' => ['auth']], function () {
