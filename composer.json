@@ -67,7 +67,7 @@
             "chmod -R 777 storage",
             "@php artisan config:cache",
             "@php artisan migrate:fresh --seed",
-            "php artisan passport:install"
+            "@php artisan passport:install"
         ]
     }
 }
