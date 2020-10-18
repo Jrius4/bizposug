@@ -17,12 +17,12 @@ pipelines:
           - curl -vk http://localhost:8000
           - git push https://heroku:0778a113-cecb-4a6d-844d-ae1620fe2373@git.heroku.com/ugbizpos.git HEAD
         services:
-          - mysql
+          - mariadb
 
 definitions:
   services:
-    mysql:
-      image: mysql:5.7
+    mariadb:
+      image: mariadb:10.5
       environment:
         MYSQL_DATABASE: 'homestead'
         MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
