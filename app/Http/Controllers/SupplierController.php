@@ -30,8 +30,8 @@ class SupplierController extends Controller
         if ($sortRowsBy == 'name') {
             $sortRowsBy = 'name';
         }
-        $payments = Supplier::with('payments')->orderBy($sortRowsBy, ($sortDesc ? 'desc' : 'asc'))->where('name', 'like', '%' . $query . '%')->paginate($rowsPerPage);
+        $suppliers = Supplier::with('payments')->orderBy($sortRowsBy, ($sortDesc ? 'desc' : 'asc'))->where('name', 'like', '%' . $query . '%')->orWhere('company', 'like', '%' . $query . '%')->paginate($rowsPerPage);
 
-        return response()->json(compact('payments', 'sortRowsBy'));
+        return response()->json(compact('suppliers', 'sortRowsBy'));
     }
 }

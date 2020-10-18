@@ -52,7 +52,7 @@ class Handler extends ExceptionHandler
     {
         if ($this->isHttpException($exception)) {
             $code = $exception->getStatusCode();
-            dump($code);
+
             if ($code ==  '404') {
                 return response()->view('error-pages.404');
             }

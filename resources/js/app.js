@@ -54,8 +54,8 @@ Vue.component(
 
 //products
 Vue.component(
-    "view-products",
-    require("./components/modules/products/ViewProducts.vue").default
+    "view-inventory",
+    require("./components/modules/products/ViewInventory.vue").default
 );
 //cashout
 Vue.component(
@@ -66,6 +66,35 @@ Vue.component(
 Vue.component(
     "payment-index",
     require("./components/modules/payments/PaymentIndex.vue").default
+);
+
+//reports
+Vue.component(
+    "transaction-summary-graphical",
+    require("./components/modules/reports/transactions/TransactionsSummaryGraphical.vue")
+        .default
+);
+// resources\js\components\modules\reports\payments\PaymentBarChartGroups.vue
+// resources\js\components\modules\reports\payments\PaymentsSummaryGraphical.vue
+Vue.component(
+    "payments-summary-graphical",
+    require("./components/modules/reports/payments/PaymentsSummaryGraphical.vue")
+        .default
+);
+Vue.component(
+    "sales-summary-graphical",
+    require("./components/modules/reports/sales/ProductSalesSummaryGraphical.vue")
+        .default
+);
+
+//graphs
+Vue.component(
+    "first-graph",
+    require("./components/modules/graphs/FirstGraph.vue").default
+);
+Vue.component(
+    "graph-index",
+    require("./components/modules/graphs/Samples/GraphIndex.vue").default
 );
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -78,7 +107,7 @@ import "./plugins/base";
 import vuetify from "./plugins/vuetify";
 import "./plugins/chartist";
 import "./plugins/CxltToastr";
-
+import "./plugins/echarts";
 const app = new Vue({
     store,
     vuetify,

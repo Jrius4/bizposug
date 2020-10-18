@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 
 class FeautureViewController extends Controller
 {
-    public function productsView(Request $request)
+    public function inventoryView(Request $request)
     {
         $productID = $request->query('productID');
 
-        return view('feautures.products');
+        return view('feautures.inventory');
     }
 
     public function cashOutView(Request $request)
@@ -19,10 +19,10 @@ class FeautureViewController extends Controller
         return view('feautures.cashout');
     }
 
-    public function historyView(Request $request)
+    public function reportsView(Request $request)
     {
         $reportID = $request->query('reportID');
-        return view('feautures.history');
+        return view('feautures.reports');
     }
 
     public function salesView(Request $request)

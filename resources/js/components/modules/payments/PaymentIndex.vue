@@ -5,12 +5,12 @@
         <v-row align="baseline" justify="center">
           <v-col cols="12" lg="12" md="12">
             <base-v-component
-              :heading="`${selectedComponent} view`"
+              :heading="`${selectedComponent} view`.toUpperCase()"
               class="teal--text text--darken-3"
             />
             <base-material-card
               icon="mdi-account-group-outline"
-              :title="`${selectedComponent} view`"
+              :title="`${selectedComponent} view`.toUpperCase()"
               class="px-5 py-3 elevation-4"
               color="teal darken-4"
               titleColor="teal--text text--darken-2"

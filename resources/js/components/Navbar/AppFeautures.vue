@@ -9,7 +9,7 @@
               v-for="(item, itd) in items"
               :key="`item-` + itd"
             >
-              <a :href="`feautures/${item.name}`.toLowerCase()">
+              <a :href="`${item.name}`.toLowerCase()">
                 <img
                   class="img-circle"
                   width="60"
@@ -34,9 +34,9 @@ export default {
   data: (vm) => {
     return {
       items: [
-        { name: "Products", image: "inventory.png" },
+        { name: "Inventory", image: "inventory.png" },
         { name: "Cashout", image: "money.png" },
-        { name: "History", image: "business-report.png" },
+        { name: "Reports", image: "business-report.png" },
         { name: "Sales", image: "budget.png" },
         { name: "Suppliers", image: "supplier.png" },
         { name: "Customers", image: "teamwork.png" },

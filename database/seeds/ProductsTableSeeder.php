@@ -104,8 +104,8 @@ class ProductsTableSeeder extends Seeder
                 'description' => $faker->paragraph(rand(1, 2))
             ]);
 
-            $product->brands()->attach($brand->find([rand(1, 10), rand(11, 18), rand(19, 35)]));
-            $product->sizes()->attach($size->find([rand(1, 10), rand(11, 18), rand(19, 25)]));
+            $product->brands()->attach($brand->find([rand(1, 35)]));
+            $product->sizes()->attach($size->find([rand(1, 25)]));
             $sizes = $product->sizes()->get();
 
             foreach ($sizes as $size) {

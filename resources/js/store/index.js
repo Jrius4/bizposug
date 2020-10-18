@@ -11,6 +11,8 @@ import cartModule from "./cart";
 import paymentsModule from "./payments";
 import workersModule from "./workers";
 import suppliersModule from "./suppliers";
+import transactionsModule from "./transactions";
+import salesModule from "./sales";
 
 Vue.use(Vuex);
 
@@ -24,7 +26,9 @@ export default new Vuex.Store({
         cartModule,
         paymentsModule,
         workersModule,
-        suppliersModule
+        suppliersModule,
+        transactionsModule,
+        salesModule
     },
     state: {
         user: null,

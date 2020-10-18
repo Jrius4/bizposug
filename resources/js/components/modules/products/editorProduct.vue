@@ -186,7 +186,7 @@
           <template v-slot:activator="{ on, attrs }">
             <v-text-field
               v-model="dateFormatted"
-              label="Date of Birth"
+              label="Expiry Date"
               hint="MM/DD/YYYY format"
               persistent-hint
               readonly
@@ -202,10 +202,6 @@
             @input="menu1 = false"
           ></v-date-picker>
         </v-menu>
-        <p>
-          Date of Birth:
-          <strong>{{ date }}</strong>
-        </p>
       </template>
       <v-divider></v-divider>
       <v-text-field

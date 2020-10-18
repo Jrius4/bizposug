@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class PaymentSeeder extends Seeder
 {
@@ -43,27 +44,28 @@ class PaymentSeeder extends Seeder
             $su = null;
             $wkr = null;
             $id = rand(1, 25);
-            if ($i % 2) {
+            if ($i % 3) {
                 $su = $suppliers->find($id);
                 $s = true;
             } else {
                 $wkr = $worker->find($id);
             }
-
-            $payments->create([
-                'serial_no' => substr("PAY" . rand(1111, 9999) . date('dmyHis'), 0, 20),
+            DB::table('payments')->insert([[
+                'serial_no' => Str::uuid(),
                 'supplier_id' => ($s ? $id : null),
                 'worker_id' => (!$s ? $id : null),
                 'received_by' => ($s ? ($su != null ? $su->name : null) : ($wkr != null ? $wkr->name : null)),
                 'type_payment' => ['supplier', 'worker'][($s ? 0 : 1)],
                 'paid' => 25000 * rand(50, 500),
                 'balance' => 1200 * rand(50, 500),
-                'reciever' => [
+                'reciever' => json_encode([
                     'name' => ($s ? ($su != null ? $su->name : null) : ($wkr != null ? $wkr->name : null)),
                     'contact' => ($s ? ($su != null ? $su->contact : null) : ($wkr != null ? $wkr->contact : null)),
-                ]
+                ], true),
+                'created_at' => $date->now()->modify((['-', "+", "+", '-'][$i % 4]) . ($i + [89, 405, 430, 405, 203, 20][$i % 5] . " days")),
+                'updated_at' => $date->now()->modify((['+', "+", "+", "+"][$i % 4]) . ($i + [89, 405, 430, 405, 203, 20][$i % 5] . " days"))
 
-            ]);
+            ]]);
         }
     }
 }

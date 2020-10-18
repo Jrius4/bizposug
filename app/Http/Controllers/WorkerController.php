@@ -30,8 +30,8 @@ class WorkerController extends Controller
         if ($sortRowsBy == 'name') {
             $sortRowsBy = 'name';
         }
-        $payments = Worker::with('payments')->orderBy($sortRowsBy, ($sortDesc ? 'desc' : 'asc'))->where('name', 'like', '%' . $query . '%')->paginate($rowsPerPage);
+        $workers = Worker::with('payments')->orderBy($sortRowsBy, ($sortDesc ? 'desc' : 'asc'))->where('name', 'like', '%' . $query . '%')->orWhere('role', 'like', '%' . $query . '%')->paginate($rowsPerPage);
 
-        return response()->json(compact('payments', 'sortRowsBy'));
+        return response()->json(compact('workers', 'sortRowsBy'));
     }
 }

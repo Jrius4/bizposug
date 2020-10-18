@@ -1,4 +1,4 @@
 @extends('layouts.app')
 @section('content')
-<view-products/>
+<transaction-summary-graphical/>
 @endsection

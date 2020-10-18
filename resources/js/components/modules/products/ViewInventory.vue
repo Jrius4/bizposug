@@ -122,7 +122,7 @@
 import { mapMutations, mapState } from "vuex";
 import editorProduct from "./editorProduct";
 export default {
-  name: "ViewProducts",
+  name: "ViewInventory",
   components: { editorProduct },
   data: () => {
     return {

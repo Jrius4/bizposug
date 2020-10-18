@@ -10,7 +10,8 @@ export default {
         },
         totalpayments: 0,
         paymentSortRowsBy: "created_at",
-        payment: null
+        payment: null,
+        type:'daily'
     },
     mutations: {
         GET_PAYMENTS(currentState, payload) {
@@ -24,19 +25,28 @@ export default {
             );
             currentState.totalpayments = parseInt(payload.payments.total);
             currentState.paymentSortRowsBy = payload.sortRowsBy || "created_at";
+            currentState.type = payload.queryType || "daily"
         }
     },
     actions: {
         async GET_PAYMENTS_ACTION(context, payload) {
             return new Promise((resolve, reject) => {
                 if (context.rootGetters.loggedIn) {
+
                     const keywords = payload.val || "";
+                    const queryType = payload.queryType || "";
+                    const start = payload.start || "";
+                    const end = payload.end || "";
+                    const data_type = payload.data_type || false;
                     const page = payload.page || "";
                     const rowsPerPage = payload.rowsPerPage || 5;
                     const sortDesc = payload.sortDesc || null;
                     const sortRowsBy = payload.sortRowsBy || "";
+                    let url = "/api/payments";
+                    if (data_type) {
+                     url = "/api/summary-payments"
+                    }
 
-                    const url = "/api/payments";
                     Axios.get(url, {
                         headers: {
                             Authorization: "Bearer " + context.rootState.token
@@ -46,7 +56,10 @@ export default {
                             page,
                             sortDesc,
                             sortRowsBy,
-                            keywords
+                            keywords,
+                            queryType,
+                            start,
+                            end
                         }
                     })
                         .then(response => {
@@ -64,6 +77,7 @@ export default {
                     reject(err);
                 }
             });
-        }
+        },
+
     }
 };

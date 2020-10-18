@@ -20,15 +20,21 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(['middleware' => ['auth'], 'prefix' => 'feautures'], function () {
-    Route::get('/products', 'FeautureViewController@productsView');
-    Route::get('/cashout', 'FeautureViewController@cashOutView');
-    Route::get('/history', 'FeautureViewController@historyView');
-    Route::get('/sales', 'FeautureViewController@salesView');
-    Route::get('/suppliers', 'FeautureViewController@suppliersView');
-    Route::get('/customers', 'FeautureViewController@customersView');
-    Route::get('/settings', 'FeautureViewController@settingsView');
-    Route::get('/payments', 'FeautureViewController@paymentsView');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('inventory', 'FeautureViewController@inventoryView');
+    Route::get('cashout', 'FeautureViewController@cashOutView');
+
+    Route::get('sales', 'FeautureViewController@salesView');
+    Route::get('suppliers', 'FeautureViewController@suppliersView');
+    Route::get('customers', 'FeautureViewController@customersView');
+    Route::get('settings', 'FeautureViewController@settingsView');
+    Route::get('payments', 'FeautureViewController@paymentsView');
+    Route::group(['prefix' => 'reports'], function () {
+        Route::get('', 'FeautureViewController@reportsView');
+        Route::get('/graphical_summary_transactions', 'ReportsController@transactionsSummaryGraphicalView')->name('transactions.summary.graphical');
+        Route::get('/graphical_summary_payments', 'PaymentController@graphicalView')->name('payments.summary.graphical');
+        Route::get('/graphical_summary_sales', 'SaleController@salesGraphicalView')->name('sales.summary.graphical');
+    });
 });
 
 Route::group(['middleware' => ['auth']], function () {

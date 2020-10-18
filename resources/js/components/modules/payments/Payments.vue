@@ -20,7 +20,7 @@
           >
             <template v-slot:top>
               <v-row flat align="baseline" justify="space-around">
-                <v-col cols="12" md="4" sm="8">
+                <v-col cols="12" md="3" sm="6">
                   <v-text-field
                     v-model="search"
                     autofocus
@@ -29,19 +29,14 @@
                     clearable
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" md="3" sm="4">
-                  <v-btn
-                    small
-                    dark
-                    color="teal darken-4"
-                    @click="editItem(null)"
-                  >
+                <v-col cols="12" md="6" sm="6">
+                  <v-btn small dark color="red darken-4" @click="makeItem()">
                     <v-icon>mdi-plus</v-icon>
                     Make Payment
                   </v-btn>
                   <v-btn small dark color="grey-blue darken-4">
                     <v-icon>mdi-download-multiple</v-icon>
-                    Export CSV
+                    Export Excel
                   </v-btn>
                 </v-col>
               </v-row>
@@ -55,6 +50,11 @@
             </template>
             <template v-slot:item.reciever="{ item }">
               <p>{{ item.reciever.name }}</p>
+            </template>
+            <template v-slot:item.action="{ item }">
+              <v-btn icon color="teal" small>
+                <v-icon small> mdi-eye </v-icon>
+              </v-btn>
             </template>
           </v-data-table>
         </v-window-item>
@@ -82,6 +82,7 @@ export default {
         { text: "Paid", align: "left", value: "paid" },
         { text: "Balance", align: "left", value: "balance" },
         { text: "Date", align: "left", value: "created_at" },
+        { text: "Action", align: "left", value: "action", sortable: false },
       ],
     };
   },
@@ -156,6 +157,7 @@ export default {
         }
       });
     },
+    makeItem() {},
   },
   watch: {
     search(value) {
