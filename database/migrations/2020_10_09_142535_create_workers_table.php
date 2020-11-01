@@ -16,6 +16,7 @@ class CreateWorkersTable extends Migration
         Schema::create('workers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
+            $table->string('biograpy')->nullable();
             $table->string('contact')->nullable();
             $table->string('address')->nullable();
             $table->string('salary')->nullable();

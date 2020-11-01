@@ -24,6 +24,10 @@ export default {
             );
             currentState.totalsizes = parseInt(payload.sizes.total);
             currentState.sizeSortRowsBy = payload.sortRowsBy || "name";
+        },
+        GET_SELECTED_DESCR_SIZE(currentState, payload) {
+            const { sizes } = payload;
+            currentState.sizes = sizes || [];
         }
     },
     actions: {

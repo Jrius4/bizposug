@@ -24,6 +24,11 @@ export default {
             );
             currentState.totalbrands = parseInt(payload.brands.total);
             currentState.brandSortRowsBy = payload.sortRowsBy || "name";
+        },
+        GET_SELECTED_DESCR_BRAND(currentState, payload) {
+
+            const { brands } = payload;
+            currentState.brands = brands || [];
         }
     },
     actions: {

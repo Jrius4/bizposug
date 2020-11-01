@@ -57,6 +57,8 @@ Vue.component(
     "view-inventory",
     require("./components/modules/products/ViewInventory.vue").default
 );
+//suppliers
+Vue.component("view-suppliers",require("./components/modules/suppliers/ViewSuppliers.vue").default)
 //cashout
 Vue.component(
     "cash-out",
@@ -84,6 +86,12 @@ Vue.component(
 Vue.component(
     "sales-summary-graphical",
     require("./components/modules/reports/sales/ProductSalesSummaryGraphical.vue")
+        .default
+);
+
+Vue.component(
+    "sales-categories-summary-graphical",
+    require("./components/modules/reports/sales/ProductCategoriesSalesSummaryGraphical.vue")
         .default
 );
 

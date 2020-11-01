@@ -289,10 +289,14 @@
                                         item-key="id"
                                         v-model="selectedinCartItems"
                                         :headers="headers"
+                                        :loading="loadingCart"
                                         :items="inCartItems"
                                         :single-expand="singleExpand"
                                         :expanded.sync="expanded"
                                         show-expand
+                                        :options.sync="options"
+                                        :items-per-page="incartItemsPerPage"
+                                        :server-items-length="totalitemsCart"
                                     >
                                         <template
                                             v-slot:expanded-item="{
@@ -597,6 +601,9 @@ export default {
     name: "CashOut",
     data: () => {
         return {
+            incartItemsPerPage:5,
+            loadingCart:false,
+            options: {},
             editor: false,
             qty: 0,
             editorTitle: "",
@@ -672,11 +679,16 @@ export default {
             totalproducts: state => state.productsModule.totalproducts,
             productSortRowsBy: state => state.productsModule.productSortRowsBy
         }),
+        totalitemsCart(){
+            let item_no = this.inCartItems.length;
+            return item_no;
+        },
+
         items() {
             let items = this.products;
-
             return items;
         },
+
         qtyFormat: {
             get: function() {
                 return this.qty;
@@ -731,6 +743,12 @@ export default {
         }
     },
     methods: {
+        getProductsInCart(){
+            return new Promise((resolve,reject)=>{
+                const { sortBy, sortDesc, page, itemsPerPage } = this.options;
+                this.incartItemsPerPage = itemsPerPage;
+            })
+        },
         formatAsCurrency(value, dec) {
             dec = dec || 0;
             if (value === null) {
@@ -966,7 +984,13 @@ export default {
         },
         sortBy() {
             this.getProducts();
-        }
+        },
+        options: {
+      handler() {
+        this.getProductsInCart();
+      },
+      deep: true,
+    },
     },
     filters: {
         currency(value) {

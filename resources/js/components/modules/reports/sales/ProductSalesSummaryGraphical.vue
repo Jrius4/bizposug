@@ -3,7 +3,7 @@
         <v-main>
             <v-container fluid>
                 <v-row align="baseline" justify="center">
-                    <product-sales-bar-chart-groups/>
+
                     <sales-pie-chart/>
                 </v-row>
             </v-container>
@@ -11,11 +11,11 @@
     </v-app>
 </template>
 <script>
-import ProductSalesBarChartGroups from "./ProductSalesBarChartGroups";
+
 import SalesPieChart from "./SalesPieChart"
 export default {
 name:'ProductSalesSummaryGraphical',
-components:{ProductSalesBarChartGroups,SalesPieChart},
+components:{SalesPieChart},
 }
 </script>
 

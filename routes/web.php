@@ -34,6 +34,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/graphical_summary_transactions', 'ReportsController@transactionsSummaryGraphicalView')->name('transactions.summary.graphical');
         Route::get('/graphical_summary_payments', 'PaymentController@graphicalView')->name('payments.summary.graphical');
         Route::get('/graphical_summary_sales', 'SaleController@salesGraphicalView')->name('sales.summary.graphical');
+        Route::get('/graphical_categories_summary_sales', 'SaleController@salesCategoriesGraphicalView')->name('sales.categories.summary.graphical');
+        Route::get('/reports_financial_cash-inflow', 'FinancialReportsController@cashInflows')->name('reports.financial.cash-inflow');
+        Route::get('/reports_financial_balance-sheet', 'FinancialReportsController@balanceSheet')->name('reports.financial.balance-sheet');
     });
 });
 

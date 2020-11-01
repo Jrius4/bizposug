@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Supplier extends Model
 {
-    public $fillable = ['name', 'slug', 'suppgroup_id', 'company', 'address', 'balance', 'contact'];
+    public $fillable = ['name', 'slug', 'suppgroup_id', 'company', 'address', 'balance', 'contact', 'biograpy'];
     public function Suppgroup()
     {
         return $this->belongsTo(Suppgroup::class);

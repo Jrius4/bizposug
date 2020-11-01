@@ -1,7 +1,9 @@
 <template>
     <v-col cols="12" md="8">
         <v-card elevation="6">
-
+            <v-card-title class="teal text--blue-gray">
+                <h3 class="text-center">Products Sales</h3>
+            </v-card-title>
             <v-card-actions>
                 <v-row align="baseline" justify="center">
                     <v-col cols="12" md="4">
@@ -16,61 +18,31 @@
                                 <v-list-item @click="typeSelected('daily')">
                                     <v-list-item-title>Daily</v-list-item-title>
                                 </v-list-item>
-                                <v-list-item
-                                    @click="typeSelected('daily_by_group')"
-                                >
-                                    <v-list-item-title
-                                        >Daily By Groups</v-list-item-title
-                                    >
-                                </v-list-item>
+
                                 <v-list-item @click="typeSelected('weekly')">
                                     <v-list-item-title
                                         >Weekly</v-list-item-title
                                     >
                                 </v-list-item>
-                                <v-list-item
-                                    @click="typeSelected('weekly_by_group')"
-                                >
-                                    <v-list-item-title
-                                        >Weekly By Groups</v-list-item-title
-                                    >
-                                </v-list-item>
+
                                 <v-list-item @click="typeSelected('monthly')">
                                     <v-list-item-title
                                         >Monthly</v-list-item-title
                                     >
                                 </v-list-item>
-                                <v-list-item
-                                    @click="typeSelected('monthly_by_group')"
-                                >
-                                    <v-list-item-title
-                                        >Monthly By Groups</v-list-item-title
-                                    >
-                                </v-list-item>
+
                                 <v-list-item @click="typeSelected('yearly')">
                                     <v-list-item-title
                                         >Yearly</v-list-item-title
                                     >
                                 </v-list-item>
-                                <v-list-item
-                                    @click="typeSelected('yearly_by_group')"
-                                >
-                                    <v-list-item-title
-                                        >Yearly By Groups</v-list-item-title
-                                    >
-                                </v-list-item>
+
                                 <v-list-item @click="typeSelected('interval')">
                                     <v-list-item-title
                                         >By Interval</v-list-item-title
                                     >
                                 </v-list-item>
-                                <v-list-item
-                                    @click="typeSelected('interval_by_group')"
-                                >
-                                    <v-list-item-title
-                                        >By Interval Groups</v-list-item-title
-                                    >
-                                </v-list-item>
+
                             </v-list>
                         </v-menu>
                     </v-col>
@@ -84,26 +56,26 @@
                             </template>
                             <v-list>
                                 <v-list-item @click="sortBySelected('created_at')">
-                                    <v-list-item-title>Daily</v-list-item-title>
+                                    <v-list-item-title>SALE DATE</v-list-item-title>
                                 </v-list-item>
                                 <v-list-item
                                     @click="sortBySelected('no_products')"
                                 >
                                     <v-list-item-title
-                                        >Daily By Groups</v-list-item-title
+                                        >NUMBER PRODUCTS</v-list-item-title
                                     >
                                 </v-list-item>
                                 <v-list-item @click="sortBySelected('amount')">
                                     <v-list-item-title
-                                        >Weekly</v-list-item-title
+                                        >AMOUNT</v-list-item-title
                                     >
                                 </v-list-item>
 
                             </v-list>
                         </v-menu>
                         <div>
-                            <v-btn small>Asc <v-icon>mdi-sort-descending</v-icon> </v-btn>
-                            <v-btn small>Desc <v-icon>mdi-sort-ascending</v-icon></v-btn>
+                            <v-btn dark :color="`${querySortDesc === 'false'?'#546E7A':'teal'}`" small @click="querySortDesc = 'false'">Asc <v-icon>mdi-sort-descending</v-icon> </v-btn>
+                            <v-btn dark :color="`${querySortDesc === 'true'?'#546E7A':'teal'}`" small @click="querySortDesc = 'true'">Desc <v-icon>mdi-sort-ascending</v-icon></v-btn>
                         </div>
                     </v-col>
                 </v-row>
@@ -354,7 +326,7 @@ export default {
         let data = [];
         const options = qs.parse(location.search, { ignoreQueryPrefix: true });
         return {
-
+            querySortDesc:'true',
             search: "",
             loading: false,
             page: 1,
@@ -424,10 +396,11 @@ export default {
             totalrowsPerPagesales: (state) =>
                 state.salesModule.salePagination.rowsPerPage,
             totalsales: (state) => state.salesModule.totalsales,
+            saleSortDesc: (state) => state.salesModule.saleSortDesc,
             saleSortRowsBy: (state) => state.salesModule.saleSortRowsBy,
         }),
         numberOfPages() {
-            //   return Math.ceil(this.items.length / this.itemsPerPage);
+
             return Math.ceil(this.totalsales / this.itemsPerPage);
         },
         getData() {
@@ -443,15 +416,6 @@ export default {
             var legendColors = [];
             var selected = [];
             var seriesData = [];
-
-            //"#"+((1<<24)*Math.random()|0).toString(16)
-
-            // this.gdp.forEach(item => {
-            //     xAxisData.push(item.year);
-            //     data1.push(item.whole);
-            //     data2.push(item.retail);
-            // });
-
 
 
             var posList = [
@@ -557,32 +521,16 @@ export default {
             };
             if(this.type === 'daily'){
 
-                // this.sales.forEach(item=>{
-                //     legendData.push(item.name);
-                //     xAxisData.push(item.sale_day);
-                //     data1.push(item.amount );
-                // })
-                // this.sales.forEach(i=>{
-                //     legendSeries.push(
-                //         {
-                //             name: i.name,
-                //             type: "bar",
-                //             barGap: 0,
-                //             label: labelOption,
-                //             data: data1
-                //         },
-                //     )
-                // })
+
 
                 this.sales.forEach((item,k)=>{
-                    // legendColors.push('#'+(Math.random()*0xFFFFFF<<0).toString(16));
-                    //  xAxisData.push(item.sale_day);
+
                     legendData.push(item.name);
                     seriesData.push({
-                        name:`${item.name} ${item.sale_day}`,
-                        value:item.amount
+                        name:`${item.name},${this.formatCurrency(item.amount)}, ${item.sale_day}`,
+                        value:this.querySortBy === `no_products`?item.no_products:item.amount
                     });
-                    selected[item.name] = k<6;
+
                 })
                  legendColors = [
                     "#00838F",
@@ -623,7 +571,7 @@ export default {
 
 
                 Object.assign(dataChart, {
-                    // color: ["#0097A7", "#F4511E", "#FBC02D", "#424242"],
+
                     color:legendColors,
                     grid: {
                         left: "2%",
@@ -632,15 +580,10 @@ export default {
                         containLabel: true
                     },
                     tooltip: {
-                        // trigger: "axis",
-                        // axisPointer: {
-                        //     type: "shadow"
-                        // }
                         trigger: 'item',
                         formatter: '{a} <br/>{b} : {c} ({d}%)'
                     },
                     title: {
-
                         text: "Sales Daily (UGX)",
                         left: "right",
                         top: 20
@@ -652,7 +595,6 @@ export default {
                         top: 20,
                         bottom: 20,
                         data: legendData,
-                        selected:selected
                     },
                     toolbox: {
                         show: true,
@@ -667,16 +609,6 @@ export default {
                                 lang: ["table view", "turn off", "refresh"],
                                 title: "Data View"
                             },
-                            magicType: {
-                                show: true,
-                                title: {
-                                    stack: "stack",
-                                    tiled: "tiled",
-                                    bar: "bar",
-                                    line: "line"
-                                },
-                                type: ["line", "bar", "stack", "tiled"]
-                            },
                             restore: {
                                 show: true,
                                 title: "restore"
@@ -688,16 +620,7 @@ export default {
                             }
                         }
                     },
-                    // xAxis: {
-                    //     type: "category",
-                    //     axisTick: { show: false },
-                    //     data: xAxisData
-                    // },
-                    // yAxis: [
-                    //     {
-                    //         type: "value"
-                    //     }
-                    // ],
+
                     series:[
                         {
                             name:"Sales",
@@ -720,119 +643,59 @@ export default {
 
             }
 
-            else if(this.type === 'daily_by_group'){
-
-                this.sales.forEach(item=>{
-                    xAxisData.push(item.transact_day);
-
-                    // wholesale
-
-                        data1.push(item.wholesale);
-                        data2.push(item.retailsale);
-
-
-                })
-
-                Object.assign(dataChart, {
-                    color: ["#0097A7", "#F4511E", "#FBC02D", "#424242"],
-                    grid: {
-                        left: "2%",
-                        right: "3%",
-                        bottom: "3%",
-                        containLabel: true
-                    },
-                    tooltip: {
-                        trigger: "axis",
-                        axisPointer: {
-                            type: "shadow"
-                        }
-                    },
-                    title: {
-                        text: "Sales Daily By Group (UGX)",
-                        left: "right",
-                        top: 20
-                    },
-                    legend: {
-                        data: ["wholesale","retailsale"]
-                    },
-                    toolbox: {
-                        show: true,
-                        orient: "vertical",
-                        left: "right",
-                        top: "center",
-                        feature: {
-                            mark: { show: true },
-                            dataView: {
-                                show: true,
-                                readOnly: true,
-                                lang: ["table view", "turn off", "refresh"],
-                                title: "Data View"
-                            },
-                            magicType: {
-                                show: true,
-                                title: {
-                                    stack: "stack",
-                                    tiled: "tiled",
-                                    bar: "bar",
-                                    line: "line"
-                                },
-                                type: ["line", "bar", "stack", "tiled"]
-                            },
-                            restore: {
-                                show: true,
-                                title: "restore"
-                            },
-                            saveAsImage: {
-                                show: true,
-                                title: "save image",
-                                pixelRatio: 2
-                            }
-                        }
-                    },
-                    xAxis: {
-                        type: "category",
-                        axisTick: { show: false },
-                        data: xAxisData
-                    },
-                    yAxis: [
-                        {
-                            type: "value"
-                        }
-                    ],
-                    series: [
-                        {
-                            name: "wholesale",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data1
-                        },
-                         {
-                            name: "retailsale",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data2
-                        },
-
-                    ],
-                    animationEasing: "elasticOut",
-                    animationDelayUpdate: function(idx) {
-                        return idx * 5;
-                    }
-                });
-
-            }
 
             else if(this.type === 'weekly'){
 
-                this.sales.forEach(item=>{
-                    xAxisData.push(`${item.week_of_the_month}W/${item.month_of_the_year}-${item.year}`);
-                    data1.push(item.total);
+                this.sales.forEach((item,k)=>{
+
+                    legendData.push(`${item.name}`);
+                    seriesData.push({
+                        name:`${item.name},${this.formatCurrency(item.amount)}, ${item.week_of_the_month}Wk/${item.month_of_the_year}/${item.year}`,
+                        value:this.querySortBy === `no_products`?item.no_products:item.amount
+                    });
+
                 })
+                 legendColors = [
+                    "#00838F",
+                    "#03A9F4",
+                    "#C62828",
+                    "#F4511E",
+                    "#757575",
+                    "#D81B60",
+                    "#43A047",
+                    "#3949AB",
+                    "#F57F17",
+                    "#795548",
+                    "#0097A7",
+                    "#512DA8",
+                    "#B71C1C",
+                    "#90A4AE",
+                    "#66BB6A",
+                    "#5E35B1",
+                    "#26C6DA",
+                    "#D32F2F",
+                    "#004D40",
+                    "#FF9800",
+                    "#0277BD",
+                    "#8D6E63",
+                    "#00BCD4",
+                    "#303F9F",
+                    "#2E7D32",
+                    "#FF5722",
+                    "#616161",
+                    "#A1887F",
+                    "#3F51B5",
+                    "#9E9D24",
+                    "#546E7A",
+                    "#C62828",
+                    "#4DB6AC",
+                    ];
+
+
 
                 Object.assign(dataChart, {
-                    color: ["#0097A7", "#F4511E", "#FBC02D", "#424242"],
+
+                    color:legendColors,
                     grid: {
                         left: "2%",
                         right: "3%",
@@ -840,10 +703,8 @@ export default {
                         containLabel: true
                     },
                     tooltip: {
-                        trigger: "axis",
-                        axisPointer: {
-                            type: "shadow"
-                        }
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b} : {c} ({d}%)'
                     },
                     title: {
                         text: "Sales Weekly (UGX)",
@@ -851,7 +712,12 @@ export default {
                         top: 20
                     },
                     legend: {
-                        data: ["in week"]
+                        type: 'scroll',
+                        orient: 'vertical',
+                        right: 10,
+                        top: 20,
+                        bottom: 20,
+                        data: legendData,
                     },
                     toolbox: {
                         show: true,
@@ -866,16 +732,6 @@ export default {
                                 lang: ["table view", "turn off", "refresh"],
                                 title: "Data View"
                             },
-                            magicType: {
-                                show: true,
-                                title: {
-                                    stack: "stack",
-                                    tiled: "tiled",
-                                    bar: "bar",
-                                    line: "line"
-                                },
-                                type: ["line", "bar", "stack", "tiled"]
-                            },
                             restore: {
                                 show: true,
                                 title: "restore"
@@ -887,129 +743,20 @@ export default {
                             }
                         }
                     },
-                    xAxis: {
-                        type: "category",
-                        axisTick: { show: false },
-                        data: xAxisData
-                    },
-                    yAxis: [
+
+                    series:[
                         {
-                            type: "value"
-                        }
-                    ],
-                    series: [
-                        {
-                            name: "in week",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data1
-                        },
-
-                    ],
-                    animationEasing: "elasticOut",
-                    animationDelayUpdate: function(idx) {
-                        return idx * 5;
-                    }
-                });
-
-            }
-
-            else if(this.type === 'weekly_by_group'){
-
-                this.sales.forEach(item=>{
-                    xAxisData.push(`${item.week_of_the_month}W/${item.mnth}/${item.yr}`);
-
-                    // wholesale
-
-                        data1.push(item.wholesale);
-                        data2.push(item.retailsale);
-
-
-                })
-
-                Object.assign(dataChart, {
-                    color: ["#0097A7", "#F4511E", "#FBC02D", "#424242"],
-                    grid: {
-                        left: "2%",
-                        right: "3%",
-                        bottom: "3%",
-                        containLabel: true
-                    },
-                    tooltip: {
-                        trigger: "axis",
-                        axisPointer: {
-                            type: "shadow"
-                        }
-                    },
-                    title: {
-                        text: "Sales Weekly By Group (UGX)",
-                        left: "right",
-                        top: 20
-                    },
-                    legend: {
-                        data: ["wholesale","retailsale"]
-                    },
-                    toolbox: {
-                        show: true,
-                        orient: "vertical",
-                        left: "right",
-                        top: "center",
-                        feature: {
-                            mark: { show: true },
-                            dataView: {
-                                show: true,
-                                readOnly: true,
-                                lang: ["table view", "turn off", "refresh"],
-                                title: "Data View"
-                            },
-                            magicType: {
-                                show: true,
-                                title: {
-                                    stack: "stack",
-                                    tiled: "tiled",
-                                    bar: "bar",
-                                    line: "line"
-                                },
-                                type: ["line", "bar", "stack", "tiled"]
-                            },
-                            restore: {
-                                show: true,
-                                title: "restore"
-                            },
-                            saveAsImage: {
-                                show: true,
-                                title: "save image",
-                                pixelRatio: 2
+                            name:"Sales",
+                            type:'pie',
+                            data:seriesData,
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
                             }
                         }
-                    },
-                    xAxis: {
-                        type: "category",
-                        axisTick: { show: false },
-                        data: xAxisData
-                    },
-                    yAxis: [
-                        {
-                            type: "value"
-                        }
-                    ],
-                    series: [
-                        {
-                            name: "wholesale",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data1
-                        },
-                         {
-                            name: "retailsale",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data2
-                        },
-
                     ],
                     animationEasing: "elasticOut",
                     animationDelayUpdate: function(idx) {
@@ -1018,22 +765,61 @@ export default {
                 });
 
             }
+
+
 
             else if(this.type === 'monthly'){
 
-                this.sales.forEach(item=>{
-                    xAxisData.push(`${item.mnth}/${item.yr}`);
+                this.sales.forEach((item,k)=>{
 
-                    // wholesale
-
-                        data1.push(item.total);
-
-
+                    legendData.push(`${item.name}`);
+                    seriesData.push({
+                        name:`${item.name},${this.formatCurrency(item.amount)}, ${item.mnth}/${item.yr}`,
+                        value:this.querySortBy === `no_products`?item.no_products:item.amount
+                    });
 
                 })
+                 legendColors = [
+                    "#00838F",
+                    "#03A9F4",
+                    "#C62828",
+                    "#F4511E",
+                    "#757575",
+                    "#D81B60",
+                    "#43A047",
+                    "#3949AB",
+                    "#F57F17",
+                    "#795548",
+                    "#0097A7",
+                    "#512DA8",
+                    "#B71C1C",
+                    "#90A4AE",
+                    "#66BB6A",
+                    "#5E35B1",
+                    "#26C6DA",
+                    "#D32F2F",
+                    "#004D40",
+                    "#FF9800",
+                    "#0277BD",
+                    "#8D6E63",
+                    "#00BCD4",
+                    "#303F9F",
+                    "#2E7D32",
+                    "#FF5722",
+                    "#616161",
+                    "#A1887F",
+                    "#3F51B5",
+                    "#9E9D24",
+                    "#546E7A",
+                    "#C62828",
+                    "#4DB6AC",
+                    ];
+
+
 
                 Object.assign(dataChart, {
-                    color: ["#0097A7", "#F4511E", "#FBC02D", "#424242"],
+
+                    color:legendColors,
                     grid: {
                         left: "2%",
                         right: "3%",
@@ -1041,10 +827,8 @@ export default {
                         containLabel: true
                     },
                     tooltip: {
-                        trigger: "axis",
-                        axisPointer: {
-                            type: "shadow"
-                        }
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b} : {c} ({d}%)'
                     },
                     title: {
                         text: "Sales Monthly (UGX)",
@@ -1052,7 +836,12 @@ export default {
                         top: 20
                     },
                     legend: {
-                        data: ["month/year"]
+                        type: 'scroll',
+                        orient: 'vertical',
+                        right: 10,
+                        top: 20,
+                        bottom: 20,
+                        data: legendData,
                     },
                     toolbox: {
                         show: true,
@@ -1067,16 +856,6 @@ export default {
                                 lang: ["table view", "turn off", "refresh"],
                                 title: "Data View"
                             },
-                            magicType: {
-                                show: true,
-                                title: {
-                                    stack: "stack",
-                                    tiled: "tiled",
-                                    bar: "bar",
-                                    line: "line"
-                                },
-                                type: ["line", "bar", "stack", "tiled"]
-                            },
                             restore: {
                                 show: true,
                                 title: "restore"
@@ -1088,130 +867,20 @@ export default {
                             }
                         }
                     },
-                    xAxis: {
-                        type: "category",
-                        axisTick: { show: false },
-                        data: xAxisData
-                    },
-                    yAxis: [
+
+                    series:[
                         {
-                            type: "value"
-                        }
-                    ],
-                    series: [
-                        {
-                            name: "month/year",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data1
-                        },
-
-                    ],
-                    animationEasing: "elasticOut",
-                    animationDelayUpdate: function(idx) {
-                        return idx * 5;
-                    }
-                });
-
-            }
-
-
-            else if(this.type === 'monthly_by_group'){
-
-                this.sales.forEach(item=>{
-                    xAxisData.push(`${item.mnth}/${item.yr}`);
-
-                    // wholesale
-
-                        data1.push(item.wholesale);
-                        data2.push(item.retailsale);
-
-
-                })
-
-                Object.assign(dataChart, {
-                    color: ["#0097A7", "#F4511E", "#FBC02D", "#424242"],
-                    grid: {
-                        left: "2%",
-                        right: "3%",
-                        bottom: "3%",
-                        containLabel: true
-                    },
-                    tooltip: {
-                        trigger: "axis",
-                        axisPointer: {
-                            type: "shadow"
-                        }
-                    },
-                    title: {
-                        text: "Sales Monthly By Group (UGX)",
-                        left: "right",
-                        top: 20
-                    },
-                    legend: {
-                        data: ["wholesale","retailsale"]
-                    },
-                    toolbox: {
-                        show: true,
-                        orient: "vertical",
-                        left: "right",
-                        top: "center",
-                        feature: {
-                            mark: { show: true },
-                            dataView: {
-                                show: true,
-                                readOnly: true,
-                                lang: ["table view", "turn off", "refresh"],
-                                title: "Data View"
-                            },
-                            magicType: {
-                                show: true,
-                                title: {
-                                    stack: "stack",
-                                    tiled: "tiled",
-                                    bar: "bar",
-                                    line: "line"
-                                },
-                                type: ["line", "bar", "stack", "tiled"]
-                            },
-                            restore: {
-                                show: true,
-                                title: "restore"
-                            },
-                            saveAsImage: {
-                                show: true,
-                                title: "save image",
-                                pixelRatio: 2
+                            name:"Sales",
+                            type:'pie',
+                            data:seriesData,
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
                             }
                         }
-                    },
-                    xAxis: {
-                        type: "category",
-                        axisTick: { show: false },
-                        data: xAxisData
-                    },
-                    yAxis: [
-                        {
-                            type: "value"
-                        }
-                    ],
-                    series: [
-                        {
-                            name: "wholesale",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data1
-                        },
-                         {
-                            name: "retailsale",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data2
-                        },
-
                     ],
                     animationEasing: "elasticOut",
                     animationDelayUpdate: function(idx) {
@@ -1220,20 +889,62 @@ export default {
                 });
 
             }
+
+
+
 
             else if(this.type === 'yearly'){
 
-                this.sales.forEach(item=>{
-                    xAxisData.push(`${item.yr}`);
+                this.sales.forEach((item,k)=>{
 
-                    // wholesale
-                    data1.push(item.total);
-
+                    legendData.push(`${item.name}`);
+                    seriesData.push({
+                        name:`${item.name},${this.formatCurrency(item.amount)}, ${item.yr}`,
+                        value:this.querySortBy === `no_products`?item.no_products:item.amount
+                    });
 
                 })
+                 legendColors = [
+                    "#00838F",
+                    "#03A9F4",
+                    "#C62828",
+                    "#F4511E",
+                    "#757575",
+                    "#D81B60",
+                    "#43A047",
+                    "#3949AB",
+                    "#F57F17",
+                    "#795548",
+                    "#0097A7",
+                    "#512DA8",
+                    "#B71C1C",
+                    "#90A4AE",
+                    "#66BB6A",
+                    "#5E35B1",
+                    "#26C6DA",
+                    "#D32F2F",
+                    "#004D40",
+                    "#FF9800",
+                    "#0277BD",
+                    "#8D6E63",
+                    "#00BCD4",
+                    "#303F9F",
+                    "#2E7D32",
+                    "#FF5722",
+                    "#616161",
+                    "#A1887F",
+                    "#3F51B5",
+                    "#9E9D24",
+                    "#546E7A",
+                    "#C62828",
+                    "#4DB6AC",
+                    ];
+
+
 
                 Object.assign(dataChart, {
-                    color: ["#0097A7", "#F4511E", "#FBC02D", "#424242"],
+
+                    color:legendColors,
                     grid: {
                         left: "2%",
                         right: "3%",
@@ -1241,10 +952,8 @@ export default {
                         containLabel: true
                     },
                     tooltip: {
-                        trigger: "axis",
-                        axisPointer: {
-                            type: "shadow"
-                        }
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b} : {c} ({d}%)'
                     },
                     title: {
                         text: "Sales Yearly (UGX)",
@@ -1252,7 +961,12 @@ export default {
                         top: 20
                     },
                     legend: {
-                        data: ["year"]
+                        type: 'scroll',
+                        orient: 'vertical',
+                        right: 10,
+                        top: 20,
+                        bottom: 20,
+                        data: legendData,
                     },
                     toolbox: {
                         show: true,
@@ -1267,16 +981,6 @@ export default {
                                 lang: ["table view", "turn off", "refresh"],
                                 title: "Data View"
                             },
-                            magicType: {
-                                show: true,
-                                title: {
-                                    stack: "stack",
-                                    tiled: "tiled",
-                                    bar: "bar",
-                                    line: "line"
-                                },
-                                type: ["line", "bar", "stack", "tiled"]
-                            },
                             restore: {
                                 show: true,
                                 title: "restore"
@@ -1288,130 +992,20 @@ export default {
                             }
                         }
                     },
-                    xAxis: {
-                        type: "category",
-                        axisTick: { show: false },
-                        data: xAxisData
-                    },
-                    yAxis: [
+
+                    series:[
                         {
-                            type: "value"
-                        }
-                    ],
-                    series: [
-                        {
-                            name: "year",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data1
-                        },
-
-
-                    ],
-                    animationEasing: "elasticOut",
-                    animationDelayUpdate: function(idx) {
-                        return idx * 5;
-                    }
-                });
-
-            }
-
-            else if(this.type === 'yearly_by_group'){
-
-                this.sales.forEach(item=>{
-                    xAxisData.push(`${item.yr}`);
-
-                    // wholesale
-
-                        data1.push(item.wholesale);
-                        data2.push(item.retailsale);
-
-
-                })
-
-                Object.assign(dataChart, {
-                    color: ["#0097A7", "#F4511E", "#FBC02D", "#424242"],
-                    grid: {
-                        left: "2%",
-                        right: "3%",
-                        bottom: "3%",
-                        containLabel: true
-                    },
-                    tooltip: {
-                        trigger: "axis",
-                        axisPointer: {
-                            type: "shadow"
-                        }
-                    },
-                    title: {
-                        text: "Sales Yearly By Group (UGX)",
-                        left: "right",
-                        top: 20
-                    },
-                    legend: {
-                        data: ["wholesale","retailsale"]
-                    },
-                    toolbox: {
-                        show: true,
-                        orient: "vertical",
-                        left: "right",
-                        top: "center",
-                        feature: {
-                            mark: { show: true },
-                            dataView: {
-                                show: true,
-                                readOnly: true,
-                                lang: ["table view", "turn off", "refresh"],
-                                title: "Data View"
-                            },
-                            magicType: {
-                                show: true,
-                                title: {
-                                    stack: "stack",
-                                    tiled: "tiled",
-                                    bar: "bar",
-                                    line: "line"
-                                },
-                                type: ["line", "bar", "stack", "tiled"]
-                            },
-                            restore: {
-                                show: true,
-                                title: "restore"
-                            },
-                            saveAsImage: {
-                                show: true,
-                                title: "save image",
-                                pixelRatio: 2
+                            name:"Sales",
+                            type:'pie',
+                            data:seriesData,
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
                             }
                         }
-                    },
-                    xAxis: {
-                        type: "category",
-                        axisTick: { show: false },
-                        data: xAxisData
-                    },
-                    yAxis: [
-                        {
-                            type: "value"
-                        }
-                    ],
-                    series: [
-                        {
-                            name: "wholesale",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data1
-                        },
-                         {
-                            name: "retailsale",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data2
-                        },
-
                     ],
                     animationEasing: "elasticOut",
                     animationDelayUpdate: function(idx) {
@@ -1420,20 +1014,61 @@ export default {
                 });
 
             }
+
+
 
             else if(this.type === 'interval'){
 
-                this.sales.forEach(item=>{
-                    xAxisData.push(`${item.p_period}`);
+                this.sales.forEach((item,k)=>{
 
-                    // wholesale
-                    data1.push(item.total);
-
+                    legendData.push(`${item.name}`);
+                    seriesData.push({
+                        name:`${item.name},${this.formatCurrency(item.amount)}, ${item.p_period}`,
+                        value:this.querySortBy === `no_products`?item.no_products:item.amount
+                    });
 
                 })
+                 legendColors = [
+                    "#00838F",
+                    "#03A9F4",
+                    "#C62828",
+                    "#F4511E",
+                    "#757575",
+                    "#D81B60",
+                    "#43A047",
+                    "#3949AB",
+                    "#F57F17",
+                    "#795548",
+                    "#0097A7",
+                    "#512DA8",
+                    "#B71C1C",
+                    "#90A4AE",
+                    "#66BB6A",
+                    "#5E35B1",
+                    "#26C6DA",
+                    "#D32F2F",
+                    "#004D40",
+                    "#FF9800",
+                    "#0277BD",
+                    "#8D6E63",
+                    "#00BCD4",
+                    "#303F9F",
+                    "#2E7D32",
+                    "#FF5722",
+                    "#616161",
+                    "#A1887F",
+                    "#3F51B5",
+                    "#9E9D24",
+                    "#546E7A",
+                    "#C62828",
+                    "#4DB6AC",
+                    ];
+
+
 
                 Object.assign(dataChart, {
-                    color: ["#0097A7", "#F4511E", "#FBC02D", "#424242"],
+
+                    color:legendColors,
                     grid: {
                         left: "2%",
                         right: "3%",
@@ -1441,18 +1076,21 @@ export default {
                         containLabel: true
                     },
                     tooltip: {
-                        trigger: "axis",
-                        axisPointer: {
-                            type: "shadow"
-                        }
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b} : {c} ({d}%)'
                     },
                     title: {
-                        text: "Sales Interval (UGX)",
+                        text: `Sales from ${this.start} to ${this.end} (UGX)`,
                         left: "right",
                         top: 20
                     },
                     legend: {
-                        data: ["year"]
+                        type: 'scroll',
+                        orient: 'vertical',
+                        right: 10,
+                        top: 20,
+                        bottom: 20,
+                        data: legendData,
                     },
                     toolbox: {
                         show: true,
@@ -1467,16 +1105,6 @@ export default {
                                 lang: ["table view", "turn off", "refresh"],
                                 title: "Data View"
                             },
-                            magicType: {
-                                show: true,
-                                title: {
-                                    stack: "stack",
-                                    tiled: "tiled",
-                                    bar: "bar",
-                                    line: "line"
-                                },
-                                type: ["line", "bar", "stack", "tiled"]
-                            },
                             restore: {
                                 show: true,
                                 title: "restore"
@@ -1488,130 +1116,20 @@ export default {
                             }
                         }
                     },
-                    xAxis: {
-                        type: "category",
-                        axisTick: { show: false },
-                        data: xAxisData
-                    },
-                    yAxis: [
+
+                    series:[
                         {
-                            type: "value"
-                        }
-                    ],
-                    series: [
-                        {
-                            name: "year",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data1
-                        },
-
-
-                    ],
-                    animationEasing: "elasticOut",
-                    animationDelayUpdate: function(idx) {
-                        return idx * 5;
-                    }
-                });
-
-            }
-
-            else if(this.type === 'interval_by_group'){
-
-                this.sales.forEach(item=>{
-                    xAxisData.push(`${item.p_period}`);
-
-                    // wholesale
-                    data1.push(item.wholesale);
-                    data2.push(item.retailsale);
-
-
-                })
-
-                Object.assign(dataChart, {
-                    color: ["#0097A7", "#F4511E", "#FBC02D", "#424242"],
-                    grid: {
-                        left: "2%",
-                        right: "3%",
-                        bottom: "3%",
-                        containLabel: true
-                    },
-                    tooltip: {
-                        trigger: "axis",
-                        axisPointer: {
-                            type: "shadow"
-                        }
-                    },
-                    title: {
-                        text: "Sales Interval (UGX)",
-                        left: "right",
-                        top: 20
-                    },
-                    legend: {
-                        data: ["wholesale","retailsale"]
-                    },
-                    toolbox: {
-                        show: true,
-                        orient: "vertical",
-                        left: "right",
-                        top: "center",
-                        feature: {
-                            mark: { show: true },
-                            dataView: {
-                                show: true,
-                                readOnly: true,
-                                lang: ["table view", "turn off", "refresh"],
-                                title: "Data View"
-                            },
-                            magicType: {
-                                show: true,
-                                title: {
-                                    stack: "stack",
-                                    tiled: "tiled",
-                                    bar: "bar",
-                                    line: "line"
-                                },
-                                type: ["line", "bar", "stack", "tiled"]
-                            },
-                            restore: {
-                                show: true,
-                                title: "restore"
-                            },
-                            saveAsImage: {
-                                show: true,
-                                title: "save image",
-                                pixelRatio: 2
+                            name:"Sales",
+                            type:'pie',
+                            data:seriesData,
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
                             }
                         }
-                    },
-                    xAxis: {
-                        type: "category",
-                        axisTick: { show: false },
-                        data: xAxisData
-                    },
-                    yAxis: [
-                        {
-                            type: "value"
-                        }
-                    ],
-                    series: [
-                        {
-                            name: "wholesale",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data1
-                        },
-                         {
-                            name: "retailsale",
-                            type: "bar",
-                            barGap: 0,
-                            label: labelOption,
-                            data: data2
-                        },
-
-
                     ],
                     animationEasing: "elasticOut",
                     animationDelayUpdate: function(idx) {
@@ -1620,6 +1138,7 @@ export default {
                 });
 
             }
+
 
             return dataChart;
         }
@@ -1637,9 +1156,9 @@ export default {
                     val: search,
                     queryType:this.queryType,
                     page: pageNew,
-                    sortRowsBy: this.saleSortRowsBy,
+                    sortRowsBy: this.querySortBy,
                     rowsPerPage: this.itemsPerPage,
-                    sortDesc: this.sortDesc
+                    sortDesc: this.querySortDesc
                 };
                 if(`${this.type}`.includes('interval')){
                     Object.assign(pagination,{
@@ -1706,7 +1225,7 @@ export default {
         },
         typeSelected(val) {
             this.queryType = val;
-            if (val === "interval" || val === "interval_by_group") {
+            if (val === "interval") {
                 this.inputStartEnd = true;
             } else {
             }
@@ -1726,6 +1245,12 @@ export default {
                 this.inputStartEnd = false;
 
 
+        },
+        formatCurrency(value){
+             return new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "UGX"
+            }).format(value);
         }
     },
     filters: {
@@ -1785,9 +1310,13 @@ export default {
         sortDesc() {
             this.getSales();
         },
-        saleSortRowsBy() {
+        querySortBy(){
+            this.getSales();
+        },
+        querySortDesc(){
             this.getSales();
         }
+
     }
 };
 </script>

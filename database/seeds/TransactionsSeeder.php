@@ -23,7 +23,7 @@ class TransactionsSeeder extends Seeder
         for ($i = 1; $i < 450; $i++) {
 
             $created =  $date->now()->modify('- ' . [3450, 4560, 632, 5489, 389, 38910, (720 * rand(12, 100))][rand(0, 6)] . 'hours')->format('Y-m-d H:i:s');
-            $products = Product::with('brands', 'sizes', 'sizeprices', 'prodgroup', 'supplier')->find([rand(1, 150), rand(1, 150), rand(151, 175), rand(176, 185), rand(186, 200), rand(201, 250)]);
+            $products = Product::with('brands', 'sizes', 'prodgroup', 'supplier')->find([rand(1, 150), rand(1, 150), rand(151, 175), rand(176, 185), rand(186, 200), rand(201, 250)]);
             $items = array();
             foreach ($products as $product) {
                 array_push($items, array_merge($product->toArray(), ['qty' => rand(1, 150)]));
@@ -58,7 +58,6 @@ class TransactionsSeeder extends Seeder
                     'qty' => $item['qty'],
                     'brand' => $item['brands'][0]['name'],
                     'size' => $item['sizes'][0]['name'],
-                    'sizeprice' => $item['sizeprices'][0]['name'],
                     'prodgroup' => $item['prodgroup']['name'],
                     'amount' => $type_of_transaction == 'Whole Sale' ? $item['qty'] * $item['wholesale_price'] : $item['qty'] * $item['retailsale_price'],
                     'wholeprice' => $type_of_transaction == 'Whole Sale' ? 1 : 0,

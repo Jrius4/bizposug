@@ -25,7 +25,6 @@ class CreateSalesTable extends Migration
             $table->string('company_name');
             $table->string('name');
             $table->string('barcode');
-            $table->string('sizeprice');
             $table->string('size');
             $table->string('brand');
             $table->string('qty');

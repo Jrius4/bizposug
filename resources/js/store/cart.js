@@ -32,6 +32,9 @@ export default {
                     const transID = response.data.transID;
 
                     window.open(`/print/reciept/?transID=${transID}`, "_blank");
+                }).catch(err => {
+                    console.log(err);
+                    reject(err)
                 });
             });
         }

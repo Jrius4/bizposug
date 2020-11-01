@@ -76,15 +76,13 @@
                     </template>
                     <template v-slot:item.action="{ item }">
                       <div class="row d-flex">
-                        <v-btn icon color="teal" small>
+                        <!-- <v-btn icon color="teal" small>
                           <v-icon small> mdi-eye </v-icon>
-                        </v-btn>
-                        <v-btn icon color="blue" small>
+                        </v-btn> -->
+                        <v-btn icon color="blue" @click="editItem(item)" small>
                           <v-icon small> mdi-square-edit-outline </v-icon>
                         </v-btn>
-                        <v-btn icon color="red" small>
-                          <v-icon small> mdi-delete </v-icon>
-                        </v-btn>
+
                       </div>
                     </template>
                   </v-data-table>
@@ -119,7 +117,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import editorProduct from "./editorProduct";
 export default {
   name: "ViewInventory",
@@ -151,15 +149,26 @@ export default {
     this.getProducts();
   },
   methods: {
+      ...mapActions({
+          GET_PRODUCT_ACTION: "productsModule/GET_PRODUCT_ACTION",
+      }),
     ...mapMutations({
       GET_SELECTED_PRODUCT: "productsModule/GET_SELECTED_PRODUCT",
+      GET_OPEN_WINDOW:"productsModule/GET_OPEN_WINDOW",
     }),
     editItem(item) {
-      if (item === null) {
+      if(item!==null) {
+        this.GET_PRODUCT_ACTION({id:item.id});
+        this.productStep = 2;
+        this.selectedProduct = "update";
+        this.GET_SELECTED_PRODUCT({ action_done: this.selectedProduct });
+    }
+    else{
         this.productStep = 2;
         this.selectedProduct = "create";
-        this.GET_SELECTED_PRODUCT({ product: this.selectedProduct });
-      }
+        this.GET_SELECTED_PRODUCT({ action_done: this.selectedProduct });
+    }
+
     },
     tableView() {
       this.productStep = 1;
@@ -224,6 +233,9 @@ export default {
   },
   computed: {
     ...mapState({
+        openWindow: state => state.productsModule.openWindow,
+        product: state => state.productsModule.product,
+        message: state => state.productsModule.message,
       products: (state) => state.productsModule.products,
       totalrowsPerPageProducts: (state) =>
         state.productsModule.productPagination.rowsPerPage,
@@ -232,6 +244,12 @@ export default {
     }),
   },
   watch: {
+      productStep(val){
+          this.GET_OPEN_WINDOW({openWindow:val})
+      },
+      openWindow(val){
+          if(val === 1)this.productStep = 1;
+      },
     search(value) {
       if (!this.search) {
         this.search = "";

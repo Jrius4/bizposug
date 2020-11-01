@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ProductsController extends Controller
 {
@@ -44,6 +45,140 @@ class ProductsController extends Controller
         $products = Product::with('prodgroup', 'brands', 'sizes', 'sizeprices', 'supplier')->orderBy($sortRowsBy, ($sortDesc ? 'desc' : 'asc'))->where('name', 'like', '%' . $query . '%')->orWhere('barcode', 'like', '%' . $query . '%')->orWhere('category', 'like', '%' . $query . '%')->orWhere('company_name', 'like', '%' . $query . '%')->paginate($rowsPerPage);
 
         return response()->json(compact('products', 'sortRowsBy'));
+    }
+
+    public function saveProduct(Request $request)
+    {
+        $rules = [
+            'name' => 'required|unique:products',
+            'category' => 'required',
+            'cost_price' => 'required',
+            'retailsale_price' => 'required',
+            'wholesale_price' => 'required',
+        ];
+
+        $input = $request->all();
+
+        $validator = Validator::make($input, $rules);
+
+        if ($validator->fails()) {
+            $response = [
+                'errors' => $validator->errors()
+            ];
+
+            return response()->json($response, 200);
+            // return response()->json($response, 403);
+        }
+        $product = new Product();
+        $product->name = $request->name;
+        $product->avatar = '/assets/icons/cart.png';
+        if ($request->barcode == null) {
+            $product->barcode = '4' . strval(rand(11111111, 99999999)) . "5";
+        } elseif ($request->barcode != null) {
+            $product->barcode = $request->barcode;
+        }
+
+        $product->category = $request->category;
+        $product->prodgroup_id = $request->prodgroup_id;
+        $product->cost_price = $request->cost_price;
+        $product->retailsale_price = $request->retailsale_price;
+        $product->wholesale_price = $request->wholesale_price;
+        $product->supplier_id = $request->supplier_id  != NULL ? $request->supplier_id : null;
+        $product->brand = $request->brand  != NULL ? $request->brand : null;
+        $product->quantity = $request->quantity != NULL ? $request->quantity : null;
+        $product->stock_type = $request->stockType != NULL ? $request->stockType : null;
+        $product->company_name = $request->company_name ? $request->company_name : null;
+        $product->tax_percentage = $request->tax_percentage ? $request->tax_percentage : null;
+        $product->description = $request->description ? $request->description : null;
+        if ($product->save()) {
+            $newProduct = Product::with('brands', 'sizes')->where('name', $request->name)->first();
+            if ($request->brand_id != null) {
+                $brands = new Brand();
+                $newProduct->brands()->attach($brands->find($request->brand_id));
+            }
+
+            if ($request->size_id != null) {
+                $sizes = new Size();
+                $newProduct->sizes()->attach($sizes->find($request->size_id));
+            }
+            $message = 'saved successfully';
+        } else {
+            $message = 'not saved!';
+        }
+        return response()->json(compact('message'));
+    }
+    public function fetchProduct($id)
+    {
+        $product = Product::with('brands', 'sizes', 'prodgroup', 'supplier')->find($id);
+        $message = '';
+        if ($product == null) {
+            $message = 'product not found!';
+        }
+        return response()->json(compact('product', 'message'));
+    }
+
+    public function updateProduct(Request $request, $id)
+    {
+
+        $rules = [
+            'name' => 'required',
+            'category' => 'required',
+            'cost_price' => 'required',
+            'retailsale_price' => 'required',
+            'wholesale_price' => 'required',
+        ];
+
+        $input = $request->all();
+
+        $validator = Validator::make($input, $rules);
+
+        if ($validator->fails()) {
+            $response = [
+                'errors' => $validator->errors()
+            ];
+
+            return response()->json($response, 200);
+            // return response()->json($response, 403);
+        }
+        $product = Product::find($id);
+        $product->name = $request->name;
+        $product->avatar = '/assets/icons/cart.png';
+        if ($request->barcode == null) {
+            $product->barcode = '4' . strval(rand(11111111, 99999999)) . "5";
+        } elseif ($request->barcode != null) {
+            $product->barcode = $request->barcode;
+        }
+
+        $product->category = $request->category;
+        $product->prodgroup_id = $request->prodgroup_id;
+        $product->cost_price = $request->cost_price;
+        $product->retailsale_price = $request->retailsale_price;
+        $product->wholesale_price = $request->wholesale_price;
+        $product->supplier_id = $request->supplier_id  != NULL ? $request->supplier_id : $product->supplier_id;
+        $product->brand = $request->brand  != NULL ? $request->brand : $product->brand;
+        $product->quantity = $request->quantity != NULL ? $request->quantity : $product->quantity;
+        $product->stock_type = $request->stockType != NULL ? $request->stockType : $product->stock_type;
+        $product->company_name = $request->company_name ? $request->company_name : $product->company_name;
+        $product->tax_percentage = $request->tax_percentage ? $request->tax_percentage : $product->tax_percentage;
+        $product->description = $request->description ? $request->description : $product->description;
+        if ($product->save()) {
+            $newProduct = Product::with('brands', 'sizes')->where('name', $request->name)->first();
+
+            $brands = new Brand();
+            $newProduct->brands()->detach($brands->find($newProduct->brands()->pluck('id')));
+            $newProduct->brands()->attach($brands->find($request->brand_id));
+
+
+
+            $sizes = new Size();
+            $newProduct->sizes()->detach($sizes->find($newProduct->sizes()->pluck('id')));
+            $newProduct->sizes()->attach($sizes->find($request->size_id));
+
+            $message = 'saved successfully';
+        } else {
+            $message = 'not saved!';
+        }
+        return response()->json(compact('message'));
     }
 
     public function fetchProdgroups()
@@ -175,7 +310,6 @@ class ProductsController extends Controller
                 $sales->qty = $item['qty'];
                 $sales->brand = $item['brands'][0]['name'];
                 $sales->size = $item['sizes'][0]['name'];
-                $sales->sizeprice = $item['sizeprices'][0]['name'];
                 $sales->prodgroup = $item['prodgroup']['name'];
                 $sales->amount = $type_of_transaction == 'Whole Sale' ? $item['qty'] * $item['wholesale_price'] : $item['qty'] * $item['retailsale_price'];
                 $sales->wholeprice = $type_of_transaction == 'Whole Sale' ? 1 : 0;

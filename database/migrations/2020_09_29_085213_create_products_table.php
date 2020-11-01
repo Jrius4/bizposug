@@ -19,11 +19,14 @@ class CreateProductsTable extends Migration
             $table->unsignedBigInteger('prodgroup_id')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->string('barcode');
+            $table->string('brand')->nullable();
+            $table->string('size')->nullable();
             $table->string('category');
             $table->string('company_name')->nullable();
             $table->string('cost_price');
             $table->string('wholesale_price');
             $table->string('retailsale_price');
+            $table->string('stock_type')->nullable();
             $table->string('quantity');
             $table->string('tax_percentage');
             $table->mediumText('description')->nullable();

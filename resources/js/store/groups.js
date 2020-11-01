@@ -24,6 +24,13 @@ export default {
             );
             currentState.totalgroups = parseInt(payload.groups.total);
             currentState.groupSortRowsBy = payload.sortRowsBy || "name";
+        },
+        GET_SELECTED_DESCR_GROUP(currentState, payload) {
+            const { groups } = payload;
+            if ((typeof groups) !== 'undefined' ) {
+                currentState.groups.push(groups)
+            }
+
         }
     },
     actions: {

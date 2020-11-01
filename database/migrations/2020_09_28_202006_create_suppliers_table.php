@@ -16,6 +16,7 @@ class CreateSuppliersTable extends Migration
         Schema::create('suppliers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('slug');
+            $table->string('biograpy')->nullable();
             $table->string('name')->unique();
             $table->unsignedBigInteger('suppgroup_id')->nullable();
             $table->string('company')->nullable();

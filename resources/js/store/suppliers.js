@@ -24,6 +24,13 @@ export default {
             );
             currentState.totalsuppliers = parseInt(payload.suppliers.total);
             currentState.supplierSortRowsBy = payload.sortRowsBy || "name";
+        },
+        GET_SELECTED_DESCR_SUPPLIER(currentState, payload) {
+            const { supplier } = payload;
+            if ((typeof supplier) !== 'undefined' ) {
+                currentState.suppliers.push(supplier)
+            }
+
         }
     },
     actions: {

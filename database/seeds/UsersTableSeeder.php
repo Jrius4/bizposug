@@ -16,10 +16,10 @@ class UsersTableSeeder extends Seeder
 
         User::create(
             [
-                'name' => 'Kazibwe Julius Junior',
-                'email' => 'kazibwejuliusjunior@gmail.com',
+                'name' => 'Manager',
+                'email' => 'manager@bixpos.com',
                 'email_verified_at' => now(),
-                'password' => bcrypt('admins3cret'), // password
+                'password' => bcrypt('manager1234'), // password
                 'remember_token' => Str::random(10),
             ]
         );
