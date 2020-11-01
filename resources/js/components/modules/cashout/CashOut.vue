@@ -290,7 +290,7 @@
                                         v-model="selectedinCartItems"
                                         :headers="headers"
                                         :loading="loadingCart"
-                                        :items="inCartItems"
+                                        :items="inCartItemProducts"
                                         :single-expand="singleExpand"
                                         :expanded.sync="expanded"
                                         show-expand
@@ -665,7 +665,8 @@ export default {
                     value: "actions",
                     sortable: false
                 }
-            ]
+            ],
+            incartPage:1,
         };
     },
     mounted() {
@@ -709,6 +710,9 @@ export default {
                 this.tdiscount = Number(newValue1.replace(/[^0-9\.]/g, ""));
             }
         },
+        inCartItemProducts(){
+            return this.inCartItems.slice((this.incartPage - 1) * this.incartItemsPerPage, this.incartPage * this.incartItemsPerPage)
+        },
         inCartItemsTotals() {
             let total = 0;
             this.inCartItems.forEach(item => {
@@ -744,9 +748,13 @@ export default {
     },
     methods: {
         getProductsInCart(){
+            this.loadingCart = true
             return new Promise((resolve,reject)=>{
                 const { sortBy, sortDesc, page, itemsPerPage } = this.options;
                 this.incartItemsPerPage = itemsPerPage;
+                this.incartPage = page;
+                this.loadingCart = false;
+
             })
         },
         formatAsCurrency(value, dec) {
