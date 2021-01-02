@@ -153,8 +153,13 @@ export default {
           GET_PRODUCT_ACTION: "productsModule/GET_PRODUCT_ACTION",
       }),
     ...mapMutations({
-      GET_SELECTED_PRODUCT: "productsModule/GET_SELECTED_PRODUCT",
       GET_OPEN_WINDOW:"productsModule/GET_OPEN_WINDOW",
+            HANDLE_EDITOR_STATE:"productsModule/HANDLE_EDITOR_STATE",
+            GET_SELECTED_PRODUCT: "productsModule/GET_SELECTED_PRODUCT",
+            GET_SELECTED_DESCR_BRAND: "brandsModule/GET_SELECTED_DESCR_BRAND",
+            GET_SELECTED_DESCR_SIZE: "sizesModule/GET_SELECTED_DESCR_SIZE",
+            GET_SELECTED_DESCR_GROUP: "groupsModule/GET_SELECTED_DESCR_GROUP",
+            GET_SELECTED_DESCR_SUPPLIER:"suppliersModule/GET_SELECTED_DESCR_SUPPLIER"
     }),
     editItem(item) {
       if(item!==null) {
@@ -171,7 +176,15 @@ export default {
 
     },
     tableView() {
-      this.productStep = 1;
+        this.productStep = 1;
+        this.GET_OPEN_WINDOW({openWindow:1});
+        this.GET_SELECTED_PRODUCT({product:null,message:null});
+
+        this.HANDLE_EDITOR_STATE({action_done:'clear'});
+        this.GET_SELECTED_DESCR_SIZE({sizes:[]});
+        this.GET_SELECTED_DESCR_BRAND({brands:[]});
+        this.GET_SELECTED_DESCR_GROUP({});
+        this.GET_SELECTED_DESCR_SUPPLIER({});
     },
     async getProducts() {
       this.loading = true;
@@ -196,7 +209,7 @@ export default {
             });
         } else if (search.length > 0) {
           if (pageNew > 1) {
-            pageNew = this.employees.length === 0 ? 1 : pageNew;
+            pageNew = this.products.length === 0 ? 1 : pageNew;
             this.loading = true;
             pagination = {
               val: search,

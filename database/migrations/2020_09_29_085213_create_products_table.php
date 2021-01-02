@@ -18,7 +18,7 @@ class CreateProductsTable extends Migration
             $table->string('name');
             $table->unsignedBigInteger('prodgroup_id')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable();
-            $table->string('barcode');
+            $table->string('barcode')->default('4' . strval(rand(11111111, 99999999)) . "5");
             $table->string('brand')->nullable();
             $table->string('size')->nullable();
             $table->string('category');
@@ -27,10 +27,10 @@ class CreateProductsTable extends Migration
             $table->string('wholesale_price');
             $table->string('retailsale_price');
             $table->string('stock_type')->nullable();
-            $table->string('quantity');
-            $table->string('tax_percentage');
+            $table->bigInteger('quantity')->default(0);
+            $table->string('tax_percentage')->default(0);
             $table->mediumText('description')->nullable();
-            $table->string('avatar');
+            $table->string('avatar')->nullable("/images/store.png");
             $table->timestamps();
 
             $table->foreign('prodgroup_id')->references('id')->on('prodgroups')

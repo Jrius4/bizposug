@@ -9,8 +9,8 @@
               class="teal--text text--darken-4"
             />
             <base-material-card
-              icon="mdi-table-of-contents"
-              title="suppliers"
+              icon="mdi-truck-delivery-outline"
+              title="Suppliers"
               class="px-5 py-3 elevation-4"
               color="teal darken-4"
               titleColor="teal--text text--darken-4"
@@ -193,7 +193,7 @@ export default {
             });
         } else if (search.length > 0) {
           if (pageNew > 1) {
-            pageNew = this.employees.length === 0 ? 1 : pageNew;
+            pageNew = this.suppliers.length === 0 ? 1 : pageNew;
             this.loading = true;
             pagination = {
               val: search,
@@ -242,7 +242,9 @@ export default {
   },
   watch: {
       supplierStep(val){
-          this.GET_OPEN_WINDOW({openWindow:val})
+          this.getsuppliers();
+          this.GET_OPEN_WINDOW({openWindow:val});
+
       },
       openWindow(val){
           if(val === 1)this.supplierStep = 1;

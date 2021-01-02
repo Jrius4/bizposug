@@ -33,6 +33,13 @@
                 label="Address"
                 clearable
             ></v-text-field>
+            <v-text-field
+                ref="pcontact"
+                v-model="pcontact"
+                prepend-icon="mdi-card-account-phone"
+                label="Contact"
+                clearable
+            ></v-text-field>
 
 
 
@@ -51,7 +58,7 @@
                             !!pbalance ||
                             'Balance is required'
                     ]"
-                v-model="pcostFormat"
+                v-model="pbalanceFormat"
                 prepend-icon="mdi-cash-multiple"
                 label="Balance"
                 clearable
@@ -59,17 +66,17 @@
 
 
             <v-textarea
-                ref="pdescription"
-                v-model="pdescription"
+                ref="pbiograpy"
+                v-model="pbiograpy"
                 prepend-icon="mdi-image-text"
-                label="Item Description"
+                label="Supplier Biograpy"
                 cols="30"
                 rows="4"
             ></v-textarea>
         </v-col>
         <div class="clear-fix"></div>
         <!-- <v-col cols="12" md="8">
-            <h5>Product Picture</h5>
+            <h5>supplier Picture</h5>
             <div>
                 <div class="col-12 position-relative">
                     <input
@@ -136,10 +143,10 @@
         <div class="clear-fix"></div>
         <v-col cols="12" md="12">
             <div class="row d-block justify-content-center">
-                <v-btn class="btn-block" @click="saveProduct()" dark color="teal darker-3">
+                <v-btn class="btn-block" @click="savesupplier()" dark color="teal darker-3">
                     <v-icon>mdi-content-save</v-icon> Save</v-btn
                 >
-                <v-btn class="btn-block"  @click="cancelProduct()" dark color="red darker-3"
+                <v-btn class="btn-block"  @click="cancelsupplier()" dark color="red darker-3"
                     ><v-icon>mdi-cancel</v-icon> Cancel</v-btn
                 >
             </div>
@@ -183,7 +190,7 @@
 <script>
 import { mapMutations, mapState } from "vuex";
 export default {
-    name: "editorProduct",
+    name: "editorsupplier",
     data: vm => {
         return {
             date: new Date().toISOString().substr(0, 10),
@@ -194,39 +201,12 @@ export default {
             radiosStockType: "stock",
             menu1: false,
             //fields
-            pbrandcode: null,
             pname: null,
             pcompany: null,
-            psupplier: null,
-            pcategory: null,
-            pbrands: null,
-            psizes: null,
-            pquantity: null,
-            pcost: null,
-            pwholesale: null,
-            pretailsale: null,
-            ptax: null,
-            pdescription: null,
-
-            searchSize: null,
-            szLoading: false,
-            sizeSelection: null,
-            sizeSelected: null,
-
-            searchBrand: null,
-            brLoading: false,
-            brandSelection: null,
-            brandSelected: null,
-
-            searchGroup: null,
-            gpLoading: false,
-            groupSelection: null,
-            groupSelected: null,
-
-            searchSupplier: null,
-            spLoading: false,
-            supplierSelection: null,
-            supplierSelected: null,
+            pcontact: null,
+            pbiograpy: null,
+            paddress: null,
+            pbalance: null,
 
             filesprofilePicture: [],
             rulesprofilePicture: [],
@@ -245,71 +225,28 @@ export default {
     },
     computed: {
         ...mapState({
+            openWindow: state => state.suppliersModule.openWindow,
+            supplier: state => state.suppliersModule.supplier,
+            action_done: state => state.suppliersModule.action_done,
+            message: state => state.suppliersModule.message,
 
-            suppliers: (state) => state.suppliersModule.suppliers,
-            sizes: state => state.sizesModule.sizes,
-            openWindow: state => state.productsModule.openWindow,
-            product: state => state.productsModule.product,
-            action_done: state => state.productsModule.action_done,
-            message: state => state.productsModule.message,
-            brands: state => state.brandsModule.brands,
-            groups: state => state.groupsModule.groups
         }),
-        sizeItems() {
-            let items = this.sizes;
-            // if (this.sizeSelection.length > 0) {
-            //     items.unshift(...this.sizeSelection);
-            // }
-            return items;
-        },
-        brandItems() {
-            let items = this.brands;
-            // if (this.brandSelection.length > 0) {
-            //     items.unshift(...this.brandSelection);
-            // }
-            return items;
-        },
-        pcostFormat: {
+        pbalanceFormat: {
             get: function() {
-                if (this.pcost !== null) {
-                    return this.formatAsCurrency(this.pcost, 0);
+                if (this.pbalance !== null) {
+                    return this.formatAsCurrency(this.pbalance, 0);
                 }
             },
             set: function(newValue) {
                 const newValue1 = newValue || "UGX 0";
-                this.pcost = Number(newValue1.replace(/[^0-9\.]/g, ""));
+                this.pbalance = Number(newValue1.replace(/[^0-9\.]/g, ""));
             }
         },
 
-        pwholesaleFormat: {
-            get: function() {
-                if (this.pwholesale !== null) {
-                    return this.formatAsCurrency(this.pwholesale, 0);
-                }
-            },
-            set: function(newValue) {
-                const newValue1 = newValue || "UGX 0";
-                this.pwholesale = Number(newValue1.replace(/[^0-9\.]/g, ""));
-            }
-        },
-        pretailsaleFormat: {
-            get: function() {
-                if (this.pretailsale !== null) {
-                    return this.formatAsCurrency(this.pretailsale, 0);
-                }
-            },
-            set: function(newValue) {
-                const newValue1 = newValue || "UGX 0";
-                this.pretailsale = Number(newValue1.replace(/[^0-9\.]/g, ""));
-            }
-        },
+
         form() {
             let validate = {
-
-                pcategory: this.pcategory || "",
-                pretailsale: this.pretailsale || "",
-                pwholesale: this.pwholesale || "",
-                pcost: this.pcost || "",
+                pcontact: this.pcontact || "",
                 pname: this.pname || "",
             };
 
@@ -318,9 +255,9 @@ export default {
     },
     methods: {
         ...mapMutations({
-            GET_OPEN_WINDOW:"productsModule/GET_OPEN_WINDOW",
-            HANDLE_EDITOR_STATE:"productsModule/HANDLE_EDITOR_STATE",
-            GET_SELECTED_PRODUCT: "productsModule/GET_SELECTED_PRODUCT",
+            GET_OPEN_WINDOW:"suppliersModule/GET_OPEN_WINDOW",
+            HANDLE_EDITOR_STATE:"suppliersModule/HANDLE_EDITOR_STATE",
+            GET_SELECTED_SUPPLIER: "suppliersModule/GET_SELECTED_SUPPLIER",
             GET_SELECTED_DESCR_BRAND: "brandsModule/GET_SELECTED_DESCR_BRAND",
             GET_SELECTED_DESCR_SIZE: "sizesModule/GET_SELECTED_DESCR_SIZE",
             GET_SELECTED_DESCR_GROUP: "groupsModule/GET_SELECTED_DESCR_GROUP",
@@ -348,143 +285,8 @@ export default {
                 currency: "UGX"
             }).format(value);
         },
-        //start groups
-        textGroup(item) {
-            this.groupSelected = item;
-            return item.name;
-        },
-        valueGroup(item) {
-            return item;
-        },
-        handleGroupSearch() {
-            this.groupSelection = this.groupSelected;
-            //   this.psizes = this.sizeSelection;
-
-            if (!this.pcategory) {
-                this.pcategory = null;
-                this.groupSelection = null;
-            }
-        },
-        removeGroup(item) {
-            this.pcategory = null;
-            this.groupSelection = null;
-        },
-        async getGroups() {
-            let data = {
-                val: this.searchGroup
-            };
-            this.gpLoading = true;
-            this.$store
-                .dispatch("groupsModule/GET_GROUPS_ACTION", data)
-                .finally(() => {
-                    this.gpLoading = false;
-                });
-        },
-        //end brands
-        //start suppiers
-        textSupplier(item) {
-            this.suppierSelected = item;
-            return item.name;
-        },
-        valueSupplier(item) {
-            return item;
-        },
-        handleSuppierSearch() {
-            this.suppierSelection = this.suppierSelected;
-            if (!this.psupplier) {
-                this.psupplier = null;
-                this.suppierSelection = null;
-            }
-        },
-        removeSupplier(item) {
-            this.psupplier = null;
-            this.suppierSelection = null;
-        },
-        async getSuppliers() {
-            let data = {
-                val: this.searchSupplier
-            };
-            this.spLoading = true;
-            this.$store
-                .dispatch("suppliersModule/GET_SUPPLIERS_ACTION", data)
-                .finally(() => {
-                    this.spLoading = false;
-                });
-        },
-        //end suppliers
-        //start brands
-        textBrand(item) {
-            this.brandSelected = item;
-            return item.name;
-        },
-        valueBrand(item) {
-            return item;
-        },
-        handleBrandSearch() {
-
-            this.brandSelection = this.brandSelected;
-            //   this.psizes = this.sizeSelection;
-
-            if (!this.pbrands) {
-                this.pbrands = null;
-                this.brandSelection = null;
-            }
-        },
-        removeBrand(item) {
-            this.pbrands = null;
-            this.brandSelection = null;
-        },
-        async getBrands() {
-            let data = {
-                val: this.searchBrand
-            };
-            this.brLoading = true;
-            this.$store
-                .dispatch("brandsModule/GET_BRANDS_ACTION", data)
-                .finally(() => {
-                    this.brLoading = false;
-                });
-        },
-        //end brands
-        //start sizes
-        textSize(item) {
-            this.sizeSelected = item;
-            return item.name;
-        },
-        valueSize(item) {
-            return item;
-        },
-        handleSizeSearch() {
 
 
-
-            this.sizeSelection = this.sizeSelected;
-            //   this.psizes = this.sizeSelection;
-
-            if (!this.psizes) {
-                this.psizes = null;
-                this.sizeSelection = null;
-            }
-        },
-        removeSize(item) {
-            // const { id } = item;
-            // const index = this.psizes.findIndex(p => p.id === id);
-            // this.psizes.splice(index, 1);
-            this.psizes = null;
-                this.sizeSelection = null;
-        },
-        async getSize() {
-            let data = {
-                val: this.searchSize
-            };
-            this.szLoading = true;
-            this.$store
-                .dispatch("sizesModule/GET_SIZES_ACTION", data)
-                .finally(() => {
-                    this.szLoading = false;
-                });
-        },
-        //end sizes
         //class end
 
         convertBytesToSize(bytes) {
@@ -575,37 +377,37 @@ export default {
         },
         //   end files profilePicture
 
-        //saving product
-        saveProduct(){
-            this.actionNow = 'save_product';
-            this.dialogTitle = "Saving Product!"
-            this.dialogBody = "Are you sure about saving this product!"
+        //saving supplier
+        savesupplier(){
+            this.actionNow = 'save_SUPPLIER';
+            this.dialogTitle = "Saving supplier!"
+            this.dialogBody = "Are you sure about saving this supplier!"
             this.dialog = true;
 
         },
-        cancelProduct(){
-            this.actionNow = 'cancel_product';
+        cancelsupplier(){
+            this.actionNow = 'cancel_SUPPLIER';
 
-            this.dialogTitle = "Cancel Saving Product!"
-            this.dialogBody = "Are you sure about cancelling, saving this product!"
+            this.dialogTitle = "Cancel Saving supplier!"
+            this.dialogBody = "Are you sure about cancelling, saving this supplier!"
             this.dialog = true;
         },
-        //end saving product
+        //end saving supplier
 
-        //confirm product
+        //confirm supplier
         agree(){
             this.dialog = false;
-            if(this.actionNow === 'save_product') this.submitProduct();
-            else if(this.actionNow === 'cancel_product') this.submitProduct();
+            if(this.actionNow === 'save_SUPPLIER') this.submitsupplier();
+            else if(this.actionNow === 'cancel_SUPPLIER') this.submitsupplier();
         },
         disagree(){
             this.dialog = false;
-            if(this.actionNow === 'save_product') this.submitProduct();
-            else if(this.actionNow === 'cancel_product') this.submitProduct();
+            if(this.actionNow === 'save_SUPPLIER') this.submitsupplier();
+            else if(this.actionNow === 'cancel_SUPPLIER') this.submitsupplier();
         },
-        submitProduct(){
+        submitsupplier(){
             let data = {};
-            if(this.actionNow === 'save_product'){
+            if(this.actionNow === 'save_SUPPLIER'){
                 this.formHasErrors = false;
                 Object.keys(this.form).forEach(f => {
                     if (!this.form[f]) this.formHasErrors = true;
@@ -624,7 +426,7 @@ export default {
                 }else{
 
                     this.$toast.success({
-                        title: "Saving Products",
+                        title: "Saving suppliers",
                         message: "All fields are good",
                         color: "#00ACC1",
                         timeOut: 5000,
@@ -635,31 +437,20 @@ export default {
                     Object.assign(data,{
                     id:this.pid,
                     name:this.pname,
-                    barcode:this.pbrandcode,
-                    brand:this.pbrands !== null ? this.pbrands.name:null,
-                    size: this.psizes !== null ? this.psizes.name:null,
-                    brand_id:this.pbrands !== null ? this.pbrands.id:null,
-                    size_id:this.psizes !== null ? this.psizes.id:null,
-                    stockType:this.radiosStockType,
-                    prodgroup_id:this.pcategory !== null?this.pcategory.id:null,
-                    category:this.pcategory !== null?this.pcategory.name:null,
-                    supplier_id:this.psupplier !== null ? this.psupplier.id:null,
-                    company_name:this.pcompany,
-                    cost_price:this.pcost,
-                    wholesale_price:this.pwholesale,
-                    retailsale_price:this.pretailsale,
-                    quantity:this.pquantity,
-                    tax_percentage:this.ptax,
-                    description:this.pdescription,
-                    avatar:this.filesprofilePicture,
+                    contact:this.pcontact,
+                    company:this.pcompany,
+                    address:this.paddress,
+                    balance:this.pbalance,
+                    biograpy:this.pbiograpy,
+
                 });
-                this.$store.dispatch('productsModule/SAVE_PRODUCT_ACTION',data).then(res=>{
+                this.$store.dispatch('suppliersModule/SAVE_SUPPLIER_ACTION',data).then(res=>{
 
                     const {errors,message} = res;
 
                     if(message !== undefined){
                         this.$toast.success({
-                        title: "Saved Product Well!",
+                        title: "Saved supplier Well!",
                         message: message,
                         color: "#388E3C",
                         timeOut: 5000,
@@ -700,7 +491,7 @@ export default {
 
 
             }
-            else if(this.actionNow === 'cancel_product'){
+            else if(this.actionNow === 'cancel_SUPPLIER'){
 
                 this.$refs.form.reset();
                 this.GET_OPEN_WINDOW({openWindow:1});
@@ -717,55 +508,36 @@ export default {
             this.dialogBody = "";
         }
 
-        //end confirm product
+        //end confirm supplier
     },
     beforeDestroy() {
         this.sizeSelection = null;
         this.sizeSelected = null;
         this.brandSelection = null;
         this.brandSelected = null;
-        this.GET_SELECTED_PRODUCT({ action_done: null });
+        this.GET_SELECTED_SUPPLIER({ action_done: null });
     },
     destroyed() {
         this.sizeSelection = [];
         this.sizeSelected = [];
         this.brandSelection = [];
         this.brandSelected = [];
-        this.GET_SELECTED_PRODUCT({ action_done: null });
+        this.GET_SELECTED_SUPPLIER({ action_done: null });
     },
     watch: {
-        product(val){
-if(val!== null){
-            this.pid = val.id || null;
-            this.HANDLE_EDITOR_STATE({action_done:'update'});
-            this.pname = val.name || null;
-            this.pbrandcode = val.barcode || null;
-            this.pcompany = val.company_name || null;
-            this.pcost = val.cost_price || null;
-            this.pwholesale = val.wholesale_price || null;
-            this.pretailsale = val.retailsale_price || null;
-            this.pdescription = val.description || null;
-            this.pquantity = val.quantity || null;
-            this.ptax = val.tax_percentage || null;
-            this.radiosStockType = val.stock_type || null;
-            this.brandSelection = val.brands.length > 0? val.brands[0] : null;
-            this.brandSelected = val.brands.length > 0? val.brands[0] : null;
-            this.pbrands = val.brands.length > 0? val.brands[0] : null;
-            this.sizeSelection = val.sizes.length > 0? val.sizes[0] : null;
-            this.sizeSelected = val.sizes.length > 0? val.sizes[0] : null;
-            this.psizes = val.sizes.length > 0? val.sizes[0] : null;
-            this.groupSelected = typeof val.prodgroup !== 'undefined' ?val.prodgroup:null;
-            this.groupSelection = typeof val.prodgroup !== 'undefined' ?val.prodgroup:null;
-            this.pcategory = typeof val.prodgroup !== 'undefined' ?val.prodgroup:null;
-            this.suppierSelected = typeof val.supplier !== 'undefined' ?val.supplier:null;
-            this.suppierSelection = typeof val.supplier !== 'undefined' ?val.supplier:null;
-            this.psupplier = typeof val.supplier !== 'undefined' ?val.supplier:null;
-            this.GET_SELECTED_DESCR_SIZE({sizes:val.sizes});
-            this.GET_SELECTED_DESCR_BRAND({brands:val.brands});
-            this.GET_SELECTED_DESCR_GROUP({groups:val.prodgroup});
-            this.GET_SELECTED_DESCR_SUPPLIER({supplier:val.supplier});
+        supplier(val){
+            if(val!== null){
+                        this.pid = val.id || null;
+                        this.HANDLE_EDITOR_STATE({action_done:'update'});
+                        this.pname = val.name || null;
+                        this.pcontact = val.contact || null;
+                        this.pcompany = val.company || null;
+                        this.pbiograpy = val.biograpy || null;
+                        this.paddress = val.address || null;
+                        this.pbalance = val.balance || null;
 
-}
+
+            }
 
         },
         searchSize(val) {

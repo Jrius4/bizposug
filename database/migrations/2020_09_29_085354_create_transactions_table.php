@@ -18,6 +18,8 @@ class CreateTransactionsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->json('products')->nullable();
+            $table->json('profit')->nullable();
+            $table->json('loss')->nullable();
             $table->string('discount')->default('0');
             $table->string('total')->default('0');
             $table->mediumText('description')->nullable();

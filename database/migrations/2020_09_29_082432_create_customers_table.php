@@ -19,8 +19,10 @@ class CreateCustomersTable extends Migration
             $table->string('biograpy')->nullable();
             $table->string('contact')->nullable();
             $table->string('address')->nullable();
+            $table->string('balance')->nullable();
             $table->string('gender')->nullable();
-            $table->string('age')->nullable();
+            $table->string('d_o_b')->nullable();
+            $table->string('gift')->nullable();
             $table->timestamps();
         });
     }

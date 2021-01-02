@@ -145,6 +145,7 @@ export default {
         async GET_PRODUCTS_ACTION(context, payload) {
             return new Promise((resolve, reject) => {
                 if (context.rootGetters.loggedIn) {
+
                     const keywords = payload.val || "";
                     const page = payload.page || "";
                     const rowsPerPage = payload.rowsPerPage || 5;
@@ -166,6 +167,7 @@ export default {
                     })
                         .then(response => {
                             const result = response.data;
+
                             context.commit("GET_PRODUCTS", result);
                             resolve(result);
                         })

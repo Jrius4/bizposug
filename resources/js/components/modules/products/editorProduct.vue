@@ -34,11 +34,7 @@
             ></v-text-field>
             <v-autocomplete
                 ref="psupplier"
-                :rules="[
-                                            () =>
-                                                !!psupplier ||
-                                                'supplier is required'
-                                        ]"
+
                 v-model="psupplier"
                 prepend-icon="mdi-tag-multiple"
                 label="Product Supplier"
@@ -490,7 +486,6 @@ export default {
             dialog:false,
 
             formHasErrors:false,
-
         };
     },
     computed: {
@@ -958,7 +953,7 @@ export default {
                 this.GET_SELECTED_DESCR_SIZE({sizes:[]});
                 this.GET_SELECTED_DESCR_BRAND({brands:[]});
                 this.GET_SELECTED_DESCR_GROUP({});
-                this.GET_SELECTED_DESCR_SUPPLIER({})
+                this.GET_SELECTED_DESCR_SUPPLIER({});
 
             }
 
@@ -985,37 +980,47 @@ export default {
     },
     watch: {
         product(val){
-if(val!== null){
-            this.pid = val.id || null;
-            this.HANDLE_EDITOR_STATE({action_done:'update'});
-            this.pname = val.name || null;
-            this.pbrandcode = val.barcode || null;
-            this.pcompany = val.company_name || null;
-            this.pcost = val.cost_price || null;
-            this.pwholesale = val.wholesale_price || null;
-            this.pretailsale = val.retailsale_price || null;
-            this.pdescription = val.description || null;
-            this.pquantity = val.quantity || null;
-            this.ptax = val.tax_percentage || null;
-            this.radiosStockType = val.stock_type || null;
-            this.brandSelection = val.brands.length > 0? val.brands[0] : null;
-            this.brandSelected = val.brands.length > 0? val.brands[0] : null;
-            this.pbrands = val.brands.length > 0? val.brands[0] : null;
-            this.sizeSelection = val.sizes.length > 0? val.sizes[0] : null;
-            this.sizeSelected = val.sizes.length > 0? val.sizes[0] : null;
-            this.psizes = val.sizes.length > 0? val.sizes[0] : null;
-            this.groupSelected = typeof val.prodgroup !== 'undefined' ?val.prodgroup:null;
-            this.groupSelection = typeof val.prodgroup !== 'undefined' ?val.prodgroup:null;
-            this.pcategory = typeof val.prodgroup !== 'undefined' ?val.prodgroup:null;
-            this.suppierSelected = typeof val.supplier !== 'undefined' ?val.supplier:null;
-            this.suppierSelection = typeof val.supplier !== 'undefined' ?val.supplier:null;
-            this.psupplier = typeof val.supplier !== 'undefined' ?val.supplier:null;
-            this.GET_SELECTED_DESCR_SIZE({sizes:val.sizes});
-            this.GET_SELECTED_DESCR_BRAND({brands:val.brands});
-            this.GET_SELECTED_DESCR_GROUP({groups:val.prodgroup});
-            this.GET_SELECTED_DESCR_SUPPLIER({supplier:val.supplier});
+        if(val!== null){
+                    console.log({val});
+                    this.pid = val.id || null;
+                    this.HANDLE_EDITOR_STATE({action_done:'update'});
+                    this.pname = val.name || null;
+                    this.pbrandcode = val.barcode || null;
+                    this.pcompany = val.company_name || null;
+                    this.pcost = val.cost_price || null;
+                    this.pwholesale = val.wholesale_price || null;
+                    this.pretailsale = val.retailsale_price || null;
+                    this.pdescription = val.description || null;
+                    this.pquantity = val.quantity || null;
+                    this.ptax = val.tax_percentage || null;
+                    this.radiosStockType = val.stock_type || null;
+                    this.brandSelection = val.brands.length > 0? val.brands[0] : null;
+                    this.brandSelected = val.brands.length > 0? val.brands[0] : null;
+                    this.pbrands = val.brands.length > 0? val.brands[0] : null;
+                    this.sizeSelection = val.sizes.length > 0? val.sizes[0] : null;
+                    this.sizeSelected = val.sizes.length > 0? val.sizes[0] : null;
+                    this.psizes = val.sizes.length > 0? val.sizes[0] : null;
+                    this.groupSelected = typeof val.prodgroup !== 'undefined' ?val.prodgroup:null;
+                    this.groupSelection = typeof val.prodgroup !== 'undefined' ?val.prodgroup:null;
+                    this.pcategory = typeof val.prodgroup !== 'undefined' ?val.prodgroup:null;
+                    this.suppierSelected = typeof val.supplier !== 'undefined' ?val.supplier:null;
+                    this.suppierSelection = typeof val.supplier !== 'undefined' ?val.supplier:null;
+                    this.psupplier = typeof val.supplier !== 'undefined' ?val.supplier:null;
+                    this.GET_SELECTED_DESCR_SIZE({sizes:val.sizes});
+                    this.GET_SELECTED_DESCR_BRAND({brands:val.brands});
+                    this.GET_SELECTED_DESCR_GROUP({groups:val.prodgroup});
+                    this.GET_SELECTED_DESCR_SUPPLIER({supplier:val.supplier});
 
-}
+        }else{
+            this.$refs.form.reset();
+            this.GET_OPEN_WINDOW({openWindow:1});
+            this.GET_SELECTED_PRODUCT({product:null,message:null});
+            this.HANDLE_EDITOR_STATE({action_done:'clear'});
+            this.GET_SELECTED_DESCR_SIZE({sizes:[]});
+            this.GET_SELECTED_DESCR_BRAND({brands:[]});
+            this.GET_SELECTED_DESCR_GROUP({});
+            this.GET_SELECTED_DESCR_SUPPLIER({});
+        }
 
         },
         searchSize(val) {

@@ -22,12 +22,16 @@ class TransactionsSeeder extends Seeder
 
         for ($i = 1; $i < 450; $i++) {
 
-            $created =  $date->now()->modify('- ' . [3450, 4560, 632, 5489, 389, 38910, (720 * rand(12, 100))][rand(0, 6)] . 'hours')->format('Y-m-d H:i:s');
+
+            $created =  date_format(date_modify($date->now()->modify((['-', "+", "+", '-'][$i % 4]) . ($i + [89, 405, 430, 405, 203, 20][$i % 5] . " days")), '- ' . [3450, 4560, 632, 5489, 389, 38910, (720 * rand(12, 100))][rand(0, 6)] . 'hours'), 'Y-m-d H:i:s');
+
             $products = Product::with('brands', 'sizes', 'prodgroup', 'supplier')->find([rand(1, 150), rand(1, 150), rand(151, 175), rand(176, 185), rand(186, 200), rand(201, 250)]);
             $items = array();
             foreach ($products as $product) {
                 array_push($items, array_merge($product->toArray(), ['qty' => rand(1, 150)]));
             }
+            $profits = rand(111, 999) . [20000, 1500][rand(0, 1)];
+            $losses = rand(111, 999) . [500, 0, 1000][rand(0,  2)];
             $total = rand(111, 999) . [75000, 2800][rand(0, 1)];
             $discount = rand(0, 999) . [550, 150][rand(0, 1)];
             $subtotal = $total - $discount;
@@ -39,9 +43,23 @@ class TransactionsSeeder extends Seeder
                 'discount' => $discount,
                 'total' => $total,
                 'subtotal' => $subtotal,
+                'profit' => $profits,
+                'loss' => $losses,
                 'type_of_transaction' => $type_of_transaction,
                 'created_at' => $created, //2020-10-16 09:56:05
                 'updated_at' => $created
+            ]);
+
+            DB::table('finstatements')->insert([
+                'items' => json_encode($items, true),
+                'type' => 'sale',
+                'sub_type' =>  $type_of_transaction,
+                'amount' => $total,
+                'profits' => $profits,
+                'losses' => $losses,
+                'balance' => 0,
+                'updated_at' => $created,
+                'created_at' => $created
             ]);
 
 

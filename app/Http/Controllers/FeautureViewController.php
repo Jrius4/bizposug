@@ -24,6 +24,10 @@ class FeautureViewController extends Controller
         $reportID = $request->query('reportID');
         return view('feautures.reports');
     }
+    public function workersView()
+    {
+        return view('feautures.workers');
+    }
 
     public function salesView(Request $request)
     {

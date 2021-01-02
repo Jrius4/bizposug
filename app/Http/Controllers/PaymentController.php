@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Finstatement;
 use App\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
@@ -38,6 +40,16 @@ class PaymentController extends Controller
         $payments = Payment::with('worker', 'supplier')->orderBy($sortRowsBy, ($sortDesc ? 'desc' : 'asc'))->where('serial_no', 'like', '%' . $query . '%')->orWhere('reciever->name', 'like', '%' . $query . '%')->paginate($rowsPerPage);
 
         return response()->json(compact('payments', 'sortRowsBy'));
+    }
+
+    public function fetchPayment($id)
+    {
+        $payment = Payment::with('worker', 'supplier')->find($id);
+        $message = '';
+        if ($payment != null) {
+            $message = 'payment not found!';
+        }
+        return response()->json(compact('message', 'payment'));
     }
 
     public function summaryPayments(Request $request)
@@ -169,5 +181,65 @@ class PaymentController extends Controller
     public function graphicalView()
     {
         return view('reports.payments.graphical');
+    }
+
+    public function storePayment(Request $request)
+    {
+
+        $rules = [
+            'type_payment' => 'required',
+            'paid' => 'required',
+        ];
+
+        $input = $request->all();
+
+        $validator = Validator::make($input, $rules);
+
+        if ($validator->fails()) {
+            $response = [
+                'errors' => $validator->errors()
+            ];
+
+            return response()->json($response, 200);
+        }
+
+        $payment = new Payment();
+
+        $payment->serial_no = Str::uuid();
+        $payment->items = $request->items;
+        $payment->worker_id = $request->worker_id;
+        if ($request->supplier_id != null) $payment->supplier_id = $request->supplier_id;
+        if ($request->balance != null) $payment->balance = $request->balance;
+        if ($request->type_payment != null) $payment->type_payment = $request->type_payment;
+        if ($request->description != null) $payment->description = $request->description;
+        if ($request->reciever != null) $payment->reciever = $request->reciever;
+        if ($request->received_by != null) $payment->received_by = $request->received_by;
+        if ($request->paid != null) $payment->paid = $request->paid;
+        $payment->issued_by = auth()->user()->name;
+        $message = '';
+        if ($payment->save()) {
+            $fin = new Finstatement();
+            $fin->create([
+                'items' => json_encode([
+                    [
+                        'name' => $request->received_by,
+                        'brand' => null,
+                        'size' => null,
+                        'group' => null,
+                        'amount' => $request->paid,
+                        'balance' => $request->balance,
+                    ]
+                ], true),
+                'type' => 'expense',
+                'sub_type' => $request->type_payment,
+                'amount' => $request->paid,
+                'balance' => $request->balance,
+            ]);
+            $message = 'saved successfully';
+        } else {
+            $message = 'not saved!';
+        }
+
+        return response()->json(compact('message'));
     }
 }

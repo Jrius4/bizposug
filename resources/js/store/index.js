@@ -13,6 +13,9 @@ import workersModule from "./workers";
 import suppliersModule from "./suppliers";
 import transactionsModule from "./transactions";
 import salesModule from "./sales";
+import customersModule from "./customers";
+import accountsModule from "./accounts";
+import servicesModule from "./services";
 
 Vue.use(Vuex);
 
@@ -28,7 +31,10 @@ export default new Vuex.Store({
         workersModule,
         suppliersModule,
         transactionsModule,
-        salesModule
+        salesModule,
+        customersModule,
+        accountsModule,
+        servicesModule
     },
     state: {
         user: null,

@@ -142,6 +142,13 @@
                                                                     </tr>
                                                                     <tr>
                                                                         <td>
+                                                                           Qty Available: {{
+                                                                                card.quantity
+                                                                            }} products
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
                                                                             Cost:{{
                                                                                 card.cost_price
                                                                                     | currency
@@ -309,6 +316,14 @@
                                                 <table class="table table-sm">
                                                     <tbody>
                                                         <tr>
+                                                            <th>Qty Available:</th>
+                                                            <td>
+                                                                {{
+                                                                    item.quantity
+                                                                }} products
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
                                                             <th>Cost Price:</th>
                                                             <td>
                                                                 {{
@@ -425,6 +440,50 @@
                                             </div>
                                         </template>
                                     </v-data-table>
+                                </v-card-text>
+                            </v-card>
+                            <div class="my-6 clear-fix"></div>
+                            <v-card>
+                                <v-card-text>
+                                    <v-autocomplete
+                                        ref="pcustomer"
+                                        v-model="pcustomer"
+                                        prepend-icon="mdi-account-cash"
+                                        label="Customer"
+                                        clearable
+                                        dense
+                                        :loading="spLoading"
+                                        :items="customers"
+                                        :search-input.sync="searchCustomer"
+                                        :item-text="textCustomer"
+                                        :item-value="valueCustomer"
+                                        autocomplete
+                                        :menu-props="{ bottom: true, offsetY: true }"
+                                        hint="Please Search Customer"
+                                        chips
+                                        attach
+                                        v-on:change="handleCustomerSearch()"
+                                    >
+                                        <template v-slot:selection="data">
+                                            <v-chip
+                                                v-bind="data.attrs"
+                                                :input-value="data.selected"
+                                                close
+                                                @click="data.select"
+                                                @click:close="removeCustomer(data.item)"
+                                            >
+                                                {{ `${data.item.name}/${data.item.contact} ` }}
+                                            </v-chip>
+                                        </template>
+
+                                        <template v-slot:item="{ item }">
+                                            <v-row align="center" justify="center">
+                                                <v-col cols="12" sm="6" class="mx-1">
+                                                    <h6 v-html="`${item.name }/${item.contact}`" />
+                                                </v-col>
+                                            </v-row>
+                                        </template>
+                                    </v-autocomplete>
                                 </v-card-text>
                             </v-card>
                             <div class="my-6 clear-fix"></div>
@@ -596,7 +655,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
     name: "CashOut",
     data: () => {
@@ -667,10 +726,19 @@ export default {
                 }
             ],
             incartPage:1,
+            pcustomer:null,
+            ptotalprofit:0,
+            ptotalloss:0,
+            searchCustomer: null,
+            spLoading: false,
+            customerSelection: null,
+            customerSelected: null,
         };
     },
     mounted() {
         this.getProducts();
+        this.getCustomers();
+        this.GET_CUSTOMER_ACTION({id:1});
     },
     computed: {
         ...mapState({
@@ -678,7 +746,10 @@ export default {
             totalrowsPerPageProducts: state =>
                 state.productsModule.productPagination.rowsPerPage,
             totalproducts: state => state.productsModule.totalproducts,
-            productSortRowsBy: state => state.productsModule.productSortRowsBy
+            productSortRowsBy: state => state.productsModule.productSortRowsBy,
+            customer: state => state.customersModule.customer,
+            customers: (state) => state.customersModule.customers,
+            // customerCart: (state) => state.cartModule.customer,
         }),
         totalitemsCart(){
             let item_no = this.inCartItems.length;
@@ -707,7 +778,20 @@ export default {
             },
             set: function(newValue) {
                 const newValue1 = newValue || "UGX 0";
-                this.tdiscount = Number(newValue1.replace(/[^0-9\.]/g, ""));
+                let disct = Number(newValue1.replace(/[^0-9\.]/g, ""));
+                if(disct < this.finProduct_Loss.profit){
+                    this.tdiscount =disct
+                }else{
+                    this.$toast.error({
+                        title: `Discount exceeds you profits of ${this.finProduct_Loss.profit}`,
+                        message: "Change this Please!",
+                        color: "#D32F2F",
+                        timeOut: 5000,
+                        showMethod: "lightSpeedIn",
+                        hideMethod: "slideOutUp"
+                    });
+                     this.tdiscount = 0
+                }
             }
         },
         inCartItemProducts(){
@@ -744,14 +828,36 @@ export default {
             };
 
             return validate;
+        },
+        finProduct_Loss(){
+            let loss= 0
+            let profit = 0;
+            this.inCartItems.forEach(ele=>{
+                if(this.typeofSale === "Retail Sale"){
+                    const amt = (ele.qty *(ele.retailsale_price-ele.cost_price));
+                    if(amt>0 ) profit+=amt;
+                    if(amt<0 ) loss+=amt;
+                }
+                else if(this.typeofSale === "Whole Sale"){
+                     const amt = (ele.qty *(ele.wholesale_price-ele.cost_price));
+                    if(amt>0 ) profit+=amt;
+                    if(amt<0 ) loss+=amt;
+                }
+            });
+            return {loss,profit};
         }
     },
     methods: {
+        ...mapActions({
+            GET_CUSTOMER_ACTION:"customersModule/GET_CUSTOMER_ACTION"
+        }),
         getProductsInCart(){
             this.loadingCart = true
             return new Promise((resolve,reject)=>{
+                if(!itemsPerPage) this.options.itemsPerPage = 5;
                 const { sortBy, sortDesc, page, itemsPerPage } = this.options;
-                this.incartItemsPerPage = itemsPerPage;
+
+                this.incartItemsPerPage = !itemsPerPage?5:itemsPerPage;
                 this.incartPage = page;
                 this.loadingCart = false;
 
@@ -794,9 +900,28 @@ export default {
             const index = this.inCartItems.findIndex(p => p.id === item.id);
             if (index !== -1) {
                 Object.assign(item, { qty: 1 + parseInt(item.qty || 0) });
-                this.$set(this.inCartItems, index, item);
+                Object.assign(item, { profit: this.typeofSale === "Retail Sale" ? ((item.qty *(item.retailsale_price-item.cost_price))>0?(item.qty *(item.retailsale_price-item.cost_price)):0):((item.qty *(item.wholesale_price-item.cost_price))>0?(item.qty *(item.wholesale_price-item.cost_price)):0)});
+                Object.assign(item, { loss: this.typeofSale === "Retail Sale" ? ((item.qty *(item.retailsale_price-item.cost_price))<0?(item.qty *(item.retailsale_price-item.cost_price)):0):((item.qty *(item.wholesale_price-item.cost_price))<0?(item.qty *(item.wholesale_price-item.cost_price)):0)});
+                if(item.qty > parseInt(item.quantity)){
+                    this.$toast.error({
+                        title: `You exceeded the inventory of ${item.quantity} products`,
+                        message: "There is lesser Products, please!",
+                        color: "#D32F2F",
+                        timeOut: 8000,
+                        showMethod: "lightSpeedIn",
+                        hideMethod: "slideOutUp"
+                    });
+                }
+                else if (item.qty < parseInt(item.quantity)){
+                    this.$set(this.inCartItems, index, item);
+                }
+
+
+
             } else {
                 Object.assign(item, { qty: 1 });
+                 Object.assign(item, { profit: this.typeofSale === "Retail Sale" ? ((item.qty *(item.retailsale_price-item.cost_price))>0?(item.qty *(item.retailsale_price-item.cost_price)):0):((item.qty *(item.wholesale_price-item.cost_price))>0?(item.qty *(item.wholesale_price-item.cost_price)):0)});
+                Object.assign(item, { loss: this.typeofSale === "Retail Sale" ? ((item.qty *(item.retailsale_price-item.cost_price))<0?(item.qty *(item.retailsale_price-item.cost_price)):0):((item.qty *(item.wholesale_price-item.cost_price))<0?(item.qty *(item.wholesale_price-item.cost_price)):0)});
 
                 this.inCartItems.push(item);
             }
@@ -812,6 +937,8 @@ export default {
             const index = this.inCartItems.findIndex(p => p.id === item.id);
             if (index !== -1) {
                 Object.assign(item, { qty: (item.qty || 0) - 1 });
+                 Object.assign(item, { profit: this.typeofSale === "Retail Sale" ? ((item.qty *(item.retailsale_price-item.cost_price))>0?(item.qty *(item.retailsale_price-item.cost_price)):0):((item.qty *(item.wholesale_price-item.cost_price))>0?(item.qty *(item.wholesale_price-item.cost_price)):0)});
+                Object.assign(item, { loss: this.typeofSale === "Retail Sale" ? ((item.qty *(item.retailsale_price-item.cost_price))<0?(item.qty *(item.retailsale_price-item.cost_price)):0):((item.qty *(item.wholesale_price-item.cost_price))<0?(item.qty *(item.wholesale_price-item.cost_price)):0)});
                 if (item.qty === 0 || item.qty < 0) {
                     this.inCartItems.splice(index, 1);
                 } else {
@@ -851,7 +978,7 @@ export default {
                 this.typeofSale === "Retail Sale"
             ) {
                 if (this.inCartItems.length === 0) {
-                    this.$toast.error({
+                this.$toast.error({
                         title: "Invalid No Product Yet",
                         message: "Cart is empty!",
                         color: "#D32F2F",
@@ -912,9 +1039,11 @@ export default {
                 });
             }
         },
-        cancelCart() {
+        async cancelCart() {
             this.$refs.form.reset();
             this.inCartItems = [];
+             this.GET_CUSTOMER_ACTION({id:1});
+             this.getProducts();
         },
 
         // start dialog
@@ -931,12 +1060,19 @@ export default {
         // end dialog
         submitTrans() {
             if (this.agree_status) {
+                if(this.pcustomer === null || typeof this.pcustomer === 'undefined'){
+                    this.GET_CUSTOMER_ACTION({id:1});
+                }
+                const {profit,loss} = this.finProduct_Loss
                 let data = {
                     items: this.inCartItems,
+                    customer_id: this.pcustomer !== null?this.pcustomer.id:null,
                     subtotal: this.inCartItemsTotals,
                     discount: this.tdiscount,
                     total: this.inCartItemsTotals - this.tdiscount,
-                    type_of_transaction: this.typeofSale
+                    type_of_transaction: this.typeofSale,
+                    profit,
+                    loss,
                 };
                 this.$store
                     .dispatch("cartModule/SAVE_TRANSACTION_ACTION", data)
@@ -945,6 +1081,7 @@ export default {
                         this.$refs.form.reset();
                         this.inCartItems = [];
                         this.tdiscount = 0;
+                        this.cancelCart();
                     });
             } else {
                 this.inCartItems = [];
@@ -961,7 +1098,20 @@ export default {
             const index = this.inCartItems.findIndex(p => p.id === item.id);
             if (index !== -1) {
                 Object.assign(item, { qty: qty });
-                this.$set(this.inCartItems, index, item);
+                if(item.qty > parseInt(item.quantity)){
+                    this.$toast.error({
+                        title: `You exceeded the inventory of ${item.quantity} products` ,
+                        message: "There is lesser Products, please!",
+                        color: "#D32F2F",
+                        timeOut: 8000,
+                        showMethod: "lightSpeedIn",
+                        hideMethod: "slideOutUp"
+                    });
+                }
+                else if(item.qty < parseInt(item.quantity)){
+                    this.$set(this.inCartItems, index, item);
+                }
+
             }
             this.qty = 0;
             this.editor = false;
@@ -969,9 +1119,59 @@ export default {
         cancelProduct() {
             this.qty = 0;
             this.editor = false;
-        }
+        },
+
+        //start Customers
+        textCustomer(item) {
+            this.customerSelected = item;
+            return item.name;
+        },
+        valueCustomer(item) {
+            return item;
+        },
+        handleCustomerSearch() {
+            this.customerSelection = this.customerSelected;
+            if (!this.pcustomer) {
+                this.pcustomer = null;
+                this.customerSelection = null;
+            }
+        },
+        removeCustomer(item) {
+            this.pcustomer = null;
+            this.customerSelection = null;
+        },
+        async getCustomers() {
+            let data = {
+                val: this.searchCustomer
+            };
+            this.spLoading = true;
+            this.$store
+                .dispatch("customersModule/GET_CUSTOMERS_ACTION", data)
+                .finally(() => {
+                    this.spLoading = false;
+                });
+        },
+        //end Customers
+
     },
     watch: {
+        searchCustomer(){
+            if (!this.searchCustomer) {
+                this.searchCustomer = "";
+            }
+            if (this.searchCustomer !== "") {
+                this.getCustomers();
+            }
+        },
+        customer(val){
+            let cst = null;
+            if(!val) cst = null;
+            else cst = val;
+            this.getCustomers();
+            this.customerSelected = cst;
+            this.customerSelection = cst;
+            this.pcustomer = cst;
+        },
         search(value) {
             if (!this.search) {
                 this.search = "";

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Brand;
+use App\Finstatement;
 use App\Http\Controllers\Controller;
 use App\Prodgroup;
 use App\Product;
@@ -28,12 +29,13 @@ class ProductsController extends Controller
         }
 
 
-        $sortDesc = false;
-        if (request()->query('sortDesc') !== null) {
-            $sortDesc = request()->query('sortDesc') == 'true' ? true : false;
-        } else {
-            $sortDesc = false;
-        }
+        $sortDesc = request()->query('sortDesc') !== null ? true : false;
+
+        // if (request()->query('sortDesc') !== null) {
+        //     $sortDesc = request()->query('sortDesc') == true ? true : false;
+        // } else {
+        //     $sortDesc = false;
+        // }
         if (request()->query('sortRowsBy') !== null) {
             $sortRowsBy = request()->query('sortRowsBy');
         } else {
@@ -43,8 +45,10 @@ class ProductsController extends Controller
             $sortRowsBy = 'name';
         }
         $products = Product::with('prodgroup', 'brands', 'sizes', 'sizeprices', 'supplier')->orderBy($sortRowsBy, ($sortDesc ? 'desc' : 'asc'))->where('name', 'like', '%' . $query . '%')->orWhere('barcode', 'like', '%' . $query . '%')->orWhere('category', 'like', '%' . $query . '%')->orWhere('company_name', 'like', '%' . $query . '%')->paginate($rowsPerPage);
+        $query = request()->query();
+        $url = request()->url();
 
-        return response()->json(compact('products', 'sortRowsBy'));
+        return response()->json(compact('products', 'sortRowsBy', 'query', 'sortDesc', 'url'));
     }
 
     public function saveProduct(Request $request)
@@ -85,10 +89,10 @@ class ProductsController extends Controller
         $product->wholesale_price = $request->wholesale_price;
         $product->supplier_id = $request->supplier_id  != NULL ? $request->supplier_id : null;
         $product->brand = $request->brand  != NULL ? $request->brand : null;
-        $product->quantity = $request->quantity != NULL ? $request->quantity : null;
-        $product->stock_type = $request->stockType != NULL ? $request->stockType : null;
-        $product->company_name = $request->company_name ? $request->company_name : null;
-        $product->tax_percentage = $request->tax_percentage ? $request->tax_percentage : null;
+        $product->quantity = $request->quantity != NULL ? $request->quantity : 0;
+        $product->stock_type = $request->stockType != NULL ? $request->stockType : 'non-stock';
+        $product->company_name = $request->company_name ? $request->company_name : 'UNKNOWN';
+        $product->tax_percentage = $request->tax_percentage ? $request->tax_percentage : 0;
         $product->description = $request->description ? $request->description : null;
         if ($product->save()) {
             $newProduct = Product::with('brands', 'sizes')->where('name', $request->name)->first();
@@ -276,26 +280,41 @@ class ProductsController extends Controller
         $discount = $request->discount;
         $total = $request->total;
         $type_of_transaction = $request->type_of_transaction;
+        $customer_id = $request->customer_id != null ? $request->customer_id : null;
 
         $tran = new Transaction();
-        $trans = $tran->create([
-            'code' =>  '4' . strval(rand(11111111, 99999999)) . "5",
-            'products' => $items,
-            'discount' => $discount,
-            'total' => $total,
-            'subtotal' => $subtotal,
-            'type_of_transaction' => $type_of_transaction,
-        ]);
 
+        $profit = ($request->profit !== null ? ($request->profit  - $discount) : 0);
+        $loss = ($request->loss !== null ? $request->loss : 0);
         $tran->code = '4' . strval(rand(11111111, 99999999)) . "5";
         $tran->products = $items;
         $tran->discount = $discount;
         $tran->total = $total;
         $tran->subtotal = $subtotal;
+        $tran->loss = $loss;
+        $tran->profit = $profit;
+        $tran->customer_id = $customer_id;
         $tran->type_of_transaction = $type_of_transaction;
 
         if ($tran->save()) {
-
+            $products = new Product();
+            foreach ($items as $item) {
+                $prodt = $products->find($item['id']);
+                if ($prodt != null) {
+                    $prodt->update([
+                        'quantity' => $prodt->quantity - $item['qty']
+                    ]);
+                }
+            }
+            $fin = new Finstatement();
+            $fin->create([
+                'amount' => $total,
+                'items' => json_encode($items, true),
+                'sub_type' => $type_of_transaction,
+                'type' => 'sale',
+                'profits' => $profit,
+                'losses' => $loss
+            ]);
 
             foreach ($items as $item) {
                 $sales = new Sale();
@@ -319,7 +338,7 @@ class ProductsController extends Controller
             }
         }
 
-        $transID = $trans->id;
+        $transID = $tran->id;
 
         return response()->json(compact('transID'));
     }

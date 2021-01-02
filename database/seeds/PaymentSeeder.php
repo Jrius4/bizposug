@@ -50,14 +50,16 @@ class PaymentSeeder extends Seeder
             } else {
                 $wkr = $worker->find($id);
             }
+            $ranAmount = 25000 * rand(50, 500);
+            $ranBalance = 1200 * rand(50, 500);
             DB::table('payments')->insert([[
                 'serial_no' => Str::uuid(),
                 'supplier_id' => ($s ? $id : null),
                 'worker_id' => (!$s ? $id : null),
                 'received_by' => ($s ? ($su != null ? $su->name : null) : ($wkr != null ? $wkr->name : null)),
                 'type_payment' => ['supplier', 'worker'][($s ? 0 : 1)],
-                'paid' => 25000 * rand(50, 500),
-                'balance' => 1200 * rand(50, 500),
+                'paid' => $ranAmount,
+                'balance' => $ranBalance,
                 'reciever' => json_encode([
                     'name' => ($s ? ($su != null ? $su->name : null) : ($wkr != null ? $wkr->name : null)),
                     'contact' => ($s ? ($su != null ? $su->contact : null) : ($wkr != null ? $wkr->contact : null)),
@@ -66,6 +68,24 @@ class PaymentSeeder extends Seeder
                 'updated_at' => $date->now()->modify((['+', "+", "+", "+"][$i % 4]) . ($i + [89, 405, 430, 405, 203, 20][$i % 5] . " days"))
 
             ]]);
+            DB::table('finstatements')->insert([
+                'items' => json_encode([
+                    [
+                        'name' => ($s ? ($su != null ? $su->name : null) : ($wkr != null ? $wkr->name : null)),
+                        'brand' => null,
+                        'size' => null,
+                        'group' => null,
+                        'amount' => $ranAmount,
+                        'balance' => $ranBalance,
+                    ]
+                ], true),
+                'type' => 'expense',
+                'sub_type' => ['supplier', 'worker'][($s ? 0 : 1)],
+                'amount' => $ranAmount,
+                'balance' => $ranBalance,
+                'created_at' => $date->now()->modify((['-', "+", "+", '-'][$i % 4]) . ($i + [89, 405, 430, 405, 203, 20][$i % 5] . " days")),
+                'updated_at' => $date->now()->modify((['+', "+", "+", "+"][$i % 4]) . ($i + [89, 405, 430, 405, 203, 20][$i % 5] . " days"))
+            ]);
         }
     }
 }

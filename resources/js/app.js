@@ -58,7 +58,10 @@ Vue.component(
     require("./components/modules/products/ViewInventory.vue").default
 );
 //suppliers
-Vue.component("view-suppliers",require("./components/modules/suppliers/ViewSuppliers.vue").default)
+Vue.component("view-suppliers", require("./components/modules/suppliers/ViewSuppliers.vue").default)
+//suppliers
+Vue.component("view-workers",require("./components/modules/workers/ViewWorkers.vue").default)
+Vue.component("view-customers",require("./components/modules/customers/ViewCustomers.vue").default)
 //cashout
 Vue.component(
     "cash-out",
@@ -103,6 +106,37 @@ Vue.component(
 Vue.component(
     "graph-index",
     require("./components/modules/graphs/Samples/GraphIndex.vue").default
+);
+
+
+
+//settings
+Vue.component(
+    "settings-index",
+    require("./components/modules/settings/Settings.vue").default
+);
+Vue.component(
+    "brands-index",
+    require("./components/modules/settings/brands/ViewBrands.vue").default
+);
+Vue.component(
+    "sizes-index",
+    require("./components/modules/settings/sizes/ViewSizes.vue").default
+);
+Vue.component(
+    "groups-index",
+    require("./components/modules/settings/groups/ViewGroups.vue").default
+);
+
+//finances
+Vue.component(
+    "finance-links",
+    require("./components/modules/finances/FinanceLinks.vue").default
+);
+
+Vue.component(
+    "index-services",
+    require("./components/modules/services/IndexServices.vue").default
 );
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -10,7 +10,10 @@ export default {
         },
         totalsizes: 0,
         sizeSortRowsBy: "name",
-        size: null
+        size: null,
+        message: null,
+        action_done: null,
+        openWindow: 1,
     },
     mutations: {
         GET_SIZES(currentState, payload) {
@@ -28,9 +31,95 @@ export default {
         GET_SELECTED_DESCR_SIZE(currentState, payload) {
             const { sizes } = payload;
             currentState.sizes = sizes || [];
-        }
+        },
+        GET_SELECTED_SIZE(currentState, payload) {
+            currentState.action_done = payload.action_done;
+        },
+        GET_OPEN_WINDOW(currentState, payload) {
+
+            const { openWindow } = payload;
+            if (typeof openWindow !== 'undefined') {
+                currentState.openWindow = openWindow;
+                if (openWindow === 1) currentState.size = null;
+            }
+
+
+        },
+        HANDLE_EDITOR_STATE(currentState, payload) {
+            const { action_done } = payload;
+            if (action_done === 'clear') {
+                currentState.size = null;
+            }
+            currentState.action_done = action_done || null;
+        },
+        GET_SIZE(currentState, payload) {
+            const { size, message } = payload;
+
+            currentState.size = size;
+            currentState.message = message;
+        },
     },
     actions: {
+        async SAVE_SIZE_ACTION(context, payload) {
+            return new Promise((resolve, reject) => {
+                if (context.rootGetters.loggedIn) {
+                    const name = payload.name || "";
+
+                    const sizeID = payload.id || "";
+
+
+                    let formData = new FormData();
+                    let url = `/api/save-size`;
+                    if (sizeID !== "") {
+                        url = `/api/save-size/${sizeID}`;
+                    }
+
+
+
+                    formData.append('name', name);
+
+
+                    Axios.post(url, formData, {
+                        headers: {
+                            Authorization: "Bearer " + context.rootState.token,
+                            "Content-Type":
+                                "multipart/form-data; charset=utf-8; boundary=" +
+                                Math.random()
+                                    .toString()
+                                    .substr(2)
+                        }
+                    }).then(result => {
+                        console.log({result})
+                        const response = result.data;
+
+                        resolve(response)
+                    }).catch(err => {
+                        reject({ err })
+                    })
+
+
+                } else {
+                    const Error = 'Not Logged In';
+                    reject(Error);
+                }
+            });
+        },
+        async GET_SIZE_ACTION(context, payload) {
+            return new Promise((resolve, reject) => {
+                const sizeID = payload.id;
+                const url = `/api/sizes/${sizeID}`;
+                Axios.get(url, {
+                    headers: {
+                        Authorization: "Bearer " + context.rootState.token
+                    }
+                }).then(result => {
+                    console.log({result})
+                    const {size,message} = result.data;
+                    context.commit('GET_SIZE', {size,message});
+                })
+            });
+
+        },
         async GET_SIZES_ACTION(context, payload) {
             new Promise((resolve, reject) => {
                 if (context.rootGetters.loggedIn) {

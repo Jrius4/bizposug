@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
-    protected $fillable = ['serial_no', 'worker_id', 'supplier_id', 'reciever', 'received_by', 'items', 'type_payment', 'paid', 'description', 'received_by', 'balance', 'issued_by'];
+    protected $fillable = ['serial_no', 'worker_id', 'supplier_id', 'reciever', 'received_by', 'items', 'type_payment', 'paid', 'description', 'received_by', 'balance', 'issued_by', 'sys_u'];
     protected $casts = [
         'items' => 'json',
         'reciever' => 'json',

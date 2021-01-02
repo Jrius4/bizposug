@@ -1,5 +1,6 @@
 <?php
 
+use App\Customer;
 use App\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -23,5 +24,14 @@ class UsersTableSeeder extends Seeder
                 'remember_token' => Str::random(10),
             ]
         );
+
+        Customer::create([
+            'name' => 'customer',
+            'contact' => '######',
+            'address' => '#######',
+            'balance' => 0,
+            'gender' => '####',
+            'd_o_b' => '####',
+        ]);
     }
 }

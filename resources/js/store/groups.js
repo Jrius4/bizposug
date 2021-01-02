@@ -10,7 +10,10 @@ export default {
         },
         totalgroups: 0,
         groupSortRowsBy: "name",
-        group: null
+        group: null,
+        message: null,
+        action_done: null,
+        openWindow: 1,
     },
     mutations: {
         GET_GROUPS(currentState, payload) {
@@ -31,9 +34,94 @@ export default {
                 currentState.groups.push(groups)
             }
 
-        }
+        },
+        GET_SELECTED_GROUP(currentState, payload) {
+            currentState.action_done = payload.action_done;
+        },
+        GET_OPEN_WINDOW(currentState, payload) {
+
+            const { openWindow } = payload;
+            if (typeof openWindow !== 'undefined') {
+                currentState.openWindow = openWindow;
+                if (openWindow === 1) currentState.group = null;
+            }
+
+
+        },
+        HANDLE_EDITOR_STATE(currentState, payload) {
+            const { action_done } = payload;
+            if (action_done === 'clear') {
+                currentState.group = null;
+            }
+            currentState.action_done = action_done || null;
+        },
+        GET_GROUP(currentState, payload) {
+            const { group, message } = payload;
+
+            currentState.group = group;
+            currentState.message = message;
+        },
     },
     actions: {
+        async SAVE_GROUP_ACTION(context, payload) {
+            return new Promise((resolve, reject) => {
+                if (context.rootGetters.loggedIn) {
+                    const name = payload.name || "";
+
+                    const groupID = payload.id || "";
+
+
+                    let formData = new FormData();
+                    let url = `/api/save-group`;
+                    if (groupID !== "") {
+                        url = `/api/save-group/${groupID}`;
+                    }
+
+
+
+                    formData.append('name', name);
+
+
+                    Axios.post(url, formData, {
+                        headers: {
+                            Authorization: "Bearer " + context.rootState.token,
+                            "Content-Type":
+                                "multipart/form-data; charset=utf-8; boundary=" +
+                                Math.random()
+                                    .toString()
+                                    .substr(2)
+                        }
+                    }).then(result => {
+
+                        const response = result.data;
+
+                        resolve(response)
+                    }).catch(err => {
+                        reject({ err })
+                    })
+
+
+                } else {
+                    const Error = 'Not Logged In';
+                    reject(Error);
+                }
+            });
+        },
+        async GET_GROUP_ACTION(context, payload) {
+            return new Promise((resolve, reject) => {
+                const groupID = payload.id;
+                const url = `/api/groups/${groupID}`;
+                Axios.get(url, {
+                    headers: {
+                        Authorization: "Bearer " + context.rootState.token
+                    }
+                }).then(result => {
+                    const {group,message} = result.data;
+                    context.commit('GET_GROUP', {group,message});
+                })
+            });
+
+        },
         async GET_GROUPS_ACTION(context, payload) {
             new Promise((resolve, reject) => {
                 if (context.rootGetters.loggedIn) {
