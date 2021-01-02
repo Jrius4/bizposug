@@ -42,14 +42,20 @@
               </v-row>
             </template>
 
-            <template v-slot:item.paid="{ item }">
-              <p>{{ item.paid | currency }}</p>
+            <template v-slot:item.amount_paid="{ item }">
+              <p>{{ item.amount_paid | currency }}</p>
             </template>
-            <template v-slot:item.balance="{ item }">
-              <p>{{ item.balance | currency }}</p>
+            <template v-slot:item.served="{ item }">
+              <p>{{ item.client_details | clt_details }}</p>
             </template>
-            <template v-slot:item.received_by="{ item }">
-              <p>{{ item.received_by }}</p>
+            <template v-slot:item.balance_due="{ item }">
+              <p>{{ item.balance_due | currency }}</p>
+            </template>
+            <template v-slot:item.served_by="{ item }">
+              <p>{{ item.served_by }}</p>
+            </template>
+            <template v-slot:item.created_at="{ item }">
+              <p>{{ item.created_at | moment }}</p>
             </template>
             <template v-slot:item.action="{ item }">
               <v-btn icon color="teal" @click="viewItem(item)" small>
@@ -104,14 +110,48 @@
                         <table class="table table-sm" v-if="selectedservice !== null">
                             <tbody>
                                 <tr>
-                                    <th>Recieved By</th>
-                                    <td colspan="3">{{selectedservice.received_by}}</td>
+                                    <th>Served By</th>
+                                    <td colspan="3">{{selectedservice.served_by}}</td>
                                 </tr>
                                 <tr>
                                     <th>Date</th>
-                                    <td colspan="3">{{selectedservice.created_at}}</td>
+                                    <td colspan="3">{{selectedservice.created_at | moment}}</td>
                                 </tr>
 
+                            </tbody>
+                            <tbody v-if="selectedservice.customer_id !== null">
+                                <tr>
+                                    <th colspan="4">Customer</th>
+                                </tr>
+                                <tr>
+                                    <th>Name</th>
+                                    <td colspan="3">{{selectedservice.customer.name}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Contact</th>
+                                    <td colspan="3">{{selectedservice.customer.contact}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Address</th>
+                                    <td colspan="3">{{selectedservice.customer.address}}</td>
+                                </tr>
+                            </tbody>
+                            <tbody v-if="selectedservice.customer_id === null">
+                                <tr>
+                                    <th th colspan="4">Customer</th>
+                                </tr>
+                                <tr>
+                                    <th>Name</th>
+                                    <td colspan="3">{{selectedservice.client_details.name}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Contact</th>
+                                    <td colspan="3">{{selectedservice.client_details.contact}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Address</th>
+                                    <td colspan="3">{{selectedservice.client_details.address}}</td>
+                                </tr>
                             </tbody>
                             <tbody v-if="selectedservice.items !== null">
                                     <tr>
@@ -126,29 +166,36 @@
                                     <tr v-for="(it,i) in JSON.parse(selectedservice.items)" :key="`${i}-itemP`">
                                         <td>{{it.name}}</td>
                                         <td>{{it.qty }}{{it.units || null }}</td>
-                                        <td>{{it.rate}}</td>
-                                        <td>{{it.amount}}</td>
+                                        <td>{{it.rate | currency}}</td>
+                                        <td>{{it.amount | currency}}</td>
                                     </tr>
                                 </tbody>
                                 <tbody>
                                     <tr>
-                                    <th>Paid</th>
-                                    <td colspan="3">{{selectedservice.paid | currency}}</td>
-                                </tr>
+                                        <th>Amount Agreed</th>
+                                        <td colspan="3">{{selectedservice.amount_agreed | currency}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Amount Paid</th>
+                                        <td colspan="3">{{selectedservice.amount_paid | currency}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Balance Due</th>
+                                        <td colspan="3">{{selectedservice.balance_due | currency}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Previous Balance</th>
+                                        <td colspan="3">{{selectedservice.prev_balance | currency}}</td>
+                                    </tr>
                                 </tbody>
                                  <tbody>
                                     <tr>
                                     <th>Description</th>
-                                    <td colspan="3"><p>{{selectedservice.description}} </p></td>
+                                    <td colspan="3"><p>{{selectedservice.comment}} </p></td>
                                 </tr>
                                 </tbody>
 
-                                 <tbody>
-                                    <tr>
-                                    <th>Balance</th>
-                                    <td colspan="3"><p>{{selectedservice.balance | currency}} </p></td>
-                                </tr>
-                                </tbody>
+
                         </table>
                     </v-col>
                 </v-row>
@@ -162,6 +209,7 @@
 <script>
 import { mapState,mapMutations } from "vuex";
 import AlphaEditor from './AlphaEditor.vue';
+import moment from 'moment-timezone';
 
 export default {
   components: { AlphaEditor },
@@ -308,6 +356,14 @@ export default {
         currency: "UGX",
       }).format(value);
     },
+    clt_details(value){
+
+        return `${value.name}-${value.contact}`
+
+    },
+    moment(value){
+        return moment(value).tz('Africa/Kampala').format('ddd, Do/MMM/YYYY hh:mm:ss A');
+    }
   },
 };
 </script>

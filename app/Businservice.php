@@ -14,6 +14,7 @@ class Businservice extends Model
     protected $casts = [
         'served' => 'json',
         'items' => 'json',
+        'client_details' => 'json',
     ];
     public function customer()
     {

@@ -15,31 +15,7 @@
               color="teal darken-4"
               titleColor="teal--text text--darken-2"
             >
-              <v-row align="baseline" justify="center">
-                <v-col cols="12" md="12">
-                  <v-btn
-                  small
-                    dark
-                    color="red darken-3"
-                    @click="selectedComponent = 'AlphaEditor'"
-                    >Work-Shop Service</v-btn
-                  >
-                  <v-btn
-                  small
-                    dark
-                    color="teal darken-3"
-                    @click="selectedComponent = 'BetaEditor'"
-                    >Field Service</v-btn
-                  >
-                  <v-btn
-                    dark
-                    small
-                    color="blue-gray darken-3"
-                    @click="selectedComponent = 'ServicesTable'"
-                    >Services</v-btn
-                  >
-                </v-col>
-              </v-row>
+
               <transition
                 enter-active-class="animated fadeIn"
                 leave-active-class="animated fadeOut"

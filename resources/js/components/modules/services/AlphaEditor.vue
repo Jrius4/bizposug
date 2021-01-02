@@ -899,7 +899,7 @@ import { mapMutations, mapState } from 'vuex'
                         client_details = JSON.stringify({
                             name:this.cname,
                             contact:this.ccontact,
-                            contact:this.caddress,
+                            address:this.caddress,
                         })
                     }else if(this.ccustomer !== null){
                         client_details = JSON.stringify({
